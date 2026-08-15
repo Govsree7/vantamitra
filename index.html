@@ -1,143 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#218c35"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="VantaMitra"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-<title>VantaMitra – What Can I Cook?</title>
-<style>
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Arial, sans-serif;background:#fff9ef;color:#26321f}
-  .app{max-width:480px;margin:auto;min-height:100vh;background:#fff}
-  header{padding:22px 20px 18px;background:linear-gradient(135deg,#fff4d9,#eff8e8)}
-  .brand{font-size:30px;font-weight:800;color:#218c35}.brand span{color:#f47a20}
-  .sub{margin-top:5px;color:#6c5a48}
-  .lang{margin-top:12px;display:inline-flex;border:1px solid #ddd;border-radius:20px;overflow:hidden}
-  .lang button{border:0;background:white;padding:7px 14px}.lang .active{background:#218c35;color:white}
-  main{padding:18px}
-  h1{font-size:25px;margin:5px 0 4px}.te{color:#777;margin:0 0 18px}
-  .inputbox{display:flex;gap:8px;border:2px solid #d9ead0;border-radius:18px;padding:10px;background:white}
-  input{border:0;outline:0;flex:1;font-size:16px;padding:7px}
-  .add{border:0;border-radius:14px;background:#218c35;color:white;padding:0 15px;font-size:20px}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0}
-  .chip{background:#eef8e8;border:1px solid #cce4c3;border-radius:18px;padding:7px 11px}
-  .chip button{border:0;background:none;color:#777;margin-left:5px}
-  .find{width:100%;border:0;border-radius:16px;background:#218c35;color:white;font-size:18px;font-weight:700;padding:14px;margin:5px 0 20px}
-  .result-title{font-size:20px;margin-bottom:10px}
-  .card{border:1px solid #eee;border-radius:18px;padding:13px;margin:10px 0;background:#fff;box-shadow:0 3px 12px #0000000d}
-  .card h3{margin:0 0 7px}.meta{font-size:13px;color:#777}.why{font-size:13px;color:#527148;margin:8px 0}
-  .cook{border:0;background:#f47a20;color:white;border-radius:12px;padding:9px 13px;font-weight:700}
-  .empty{color:#777;text-align:center;padding:25px}
-  .modal{display:none;position:fixed;inset:0;background:#0008;align-items:flex-end}
-  .sheet{background:white;width:100%;max-width:480px;margin:auto;border-radius:24px 24px 0 0;padding:22px;max-height:85vh;overflow:auto}
-  .close{float:right;border:0;background:#eee;border-radius:50%;width:34px;height:34px}
-  .sheet li{margin:10px 0}
-  footer{position:sticky;bottom:0;background:white;border-top:1px solid #eee;padding:12px;text-align:center;color:#777;font-size:13px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#218c35" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon.svg" />
+  <title>VantaMitra - What Can I Cook?</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:#fff;color:#1f2a1f}
+    .app{max-width:480px;margin:auto;min-height:100vh;background:#fff}
+    header{padding:22px 20px 18px;background:linear-gradient(120deg,#fff4d6,#eff9e9)}
+    .brand{font-size:30px;font-weight:800}
+    .brand .green{color:#218c35}.brand .orange{color:#ff7a1a}
+    .sub{margin-top:5px;color:#6c5a48}
+    .lang{margin-top:14px;display:inline-flex;border:1px solid #ddd;border-radius:24px;overflow:hidden}
+    .lang button{border:0;background:white;padding:10px 18px;font-size:16px}
+    .lang button.active{background:#218c35;color:white}
+    main{padding:20px}
+    h1{font-size:26px;margin:10px 0 4px}
+    .te{color:#777;margin-bottom:18px}
+    .inputbox{display:flex;gap:8px;border:2px solid #dbe9d3;border-radius:20px;padding:8px}
+    input{border:0;outline:0;flex:1;font-size:16px;padding:10px}
+    .add{border:0;border-radius:14px;background:#218c35;color:white;font-size:25px;width:54px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+    .chip{background:#eef8e8;border:1px solid #cde2c3;border-radius:20px;padding:7px 10px}
+    .chip button{border:0;background:none;margin-left:6px;color:#666}
+    .find{width:100%;border:0;border-radius:18px;padding:16px;background:#218c35;color:#fff;font-size:20px;font-weight:700}
+    .result-title{font-size:22px;margin:28px 0 12px}
+    .card{border:1px solid #e5e5e5;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px #00000008}
+    .card h3{margin:0 0 7px}
+    .meta{font-size:13px;color:#777;margin-bottom:8px}
+    .match{font-size:13px;color:#218c35;font-weight:700;margin-bottom:10px}
+    .cook{border:0;background:#f47a20;color:white;border-radius:12px;padding:10px 14px;font-weight:700}
+    .empty{color:#777;text-align:center;padding:30px 10px}
+    footer{text-align:center;color:#888;border-top:1px solid #eee;padding:22px 12px;margin-top:20px}
+    .modal{display:none;position:fixed;inset:0;background:#0008;z-index:10;align-items:flex-end;justify-content:center}
+    .sheet{background:white;width:100%;max-width:480px;max-height:88vh;overflow:auto;border-radius:24px 24px 0 0;padding:20px}
+    .close{float:right;border:0;background:#eee;border-radius:50%;width:36px;height:36px;font-size:20px}
+    .sheet h2{margin-top:5px}
+    .sheet h4{margin-bottom:8px}
+    .sheet ul,.sheet ol{padding-left:22px;line-height:1.55}
+    .pill{display:inline-block;background:#eef8e8;color:#218c35;border-radius:18px;padding:5px 9px;margin:2px 4px 2px 0;font-size:12px}
+  </style>
 </head>
 <body>
 <div class="app">
-<header>
-  <div class="brand">Vanta<span>Mitra</span></div>
-  <div class="sub">వంట మిత్ర • Your Cooking Friend</div>
-  <div class="lang"><button class="active">తెలుగు</button><button>English</button></div>
-</header>
+  <header>
+    <div class="brand"><span class="green">Vanta</span><span class="orange">Mitra</span></div>
+    <div class="sub" id="tagline">వంట మిత్ర • Your Cooking Friend</div>
+    <div class="lang">
+      <button id="teBtn" class="active" onclick="setLang('te')">తెలుగు</button>
+      <button id="enBtn" onclick="setLang('en')">English</button>
+    </div>
+  </header>
 
-<main>
-  <h1>What can I cook today?</h1>
-  <p class="te">మీ దగ్గర ఉన్న పదార్థాలు ఇవ్వండి</p>
+  <main>
+    <h1 id="title">What can I cook today?</h1>
+    <div class="te" id="subtitle">మీ దగ్గర ఉన్న పదార్థాలు ఇవ్వండి</div>
 
-  <div class="inputbox">
-    <input id="ingredientInput" placeholder="e.g. tomato, rice, egg">
-    <button class="add" onclick="addIngredient()">+</button>
-  </div>
+    <div class="inputbox">
+      <input id="ingredientInput" placeholder="e.g. tomato, rice, egg" onkeydown="if(event.key==='Enter') addIngredient()" />
+      <button class="add" onclick="addIngredient()">+</button>
+    </div>
 
-  <div id="chips" class="chips"></div>
+    <div class="chips" id="chips"></div>
+    <button class="find" id="findBtn" onclick="findRecipes()">🍳 Find My Recipes</button>
 
-  <button class="find" onclick="findRecipes()">🍳 Find My Recipes</button>
+    <div class="result-title" id="suggestionTitle">Recipe Suggestions</div>
+    <div id="results"><div class="empty" id="emptyMsg">Add a few ingredients and tap “Find My Recipes”.</div></div>
+  </main>
 
-  <div class="result-title">Recipe Suggestions</div>
-  <div id="results" class="empty">Add a few ingredients and tap “Find My Recipes”.</div>
-</main>
-
-<footer>VantaMitra • Simple cooking guidance for every home</footer>
+  <footer>VantaMitra • Simple cooking guidance for every home</footer>
 </div>
 
-<div id="modal" class="modal" onclick="if(event.target.id==='modal')closeRecipe()">
+<div class="modal" id="modal" onclick="if(event.target===this) closeModal()">
   <div class="sheet">
-    <button class="close" onclick="closeRecipe()">✕</button>
-    <h2 id="mTitle"></h2>
-    <div id="mMeta" class="meta"></div>
-    <h3>Ingredients</h3>
-    <ul id="mIngredients"></ul>
-    <h3>Steps</h3>
-    <ol id="mSteps"></ol>
+    <button class="close" onclick="closeModal()">×</button>
+    <div id="recipeDetail"></div>
   </div>
 </div>
 
 <script>
 const recipes = [
- {name:"Tomato Rice",time:"20 min",need:["rice","tomato","onion"],ingredients:["1 cup cooked rice","2 tomatoes","1 onion","1 tsp oil","Salt to taste"],steps:["Heat oil and sauté onion.","Add chopped tomatoes and cook until soft.","Add salt and spices.","Mix in cooked rice and cook for 3–4 minutes."]},
- {name:"Egg Tomato Curry",time:"25 min",need:["egg","tomato","onion"],ingredients:["3 eggs","2 tomatoes","1 onion","1 tbsp oil","Salt and chilli powder"],steps:["Boil the eggs and remove shells.","Sauté onion in oil.","Add tomatoes and spices; cook until soft.","Add eggs and simmer for 5 minutes."]},
- {name:"Potato Tomato Curry",time:"25 min",need:["potato","tomato","onion"],ingredients:["3 potatoes","2 tomatoes","1 onion","1 tbsp oil","Salt and chilli powder"],steps:["Boil or cube the potatoes.","Sauté onion and add tomatoes.","Add spices and cook until tomatoes soften.","Add potatoes and simmer for 8 minutes."]},
- {name:"Egg Fried Rice",time:"20 min",need:["rice","egg","onion"],ingredients:["2 cups cooked rice","2 eggs","1 onion","1 tbsp oil","Salt"],steps:["Scramble eggs in hot oil.","Add onion and sauté.","Add rice and salt.","Stir-fry on high heat for 3–4 minutes."]},
- {name:"Tomato Onion Chutney",time:"15 min",need:["tomato","onion"],ingredients:["2 tomatoes","1 onion","2 chillies","1 tsp oil","Salt"],steps:["Sauté onion, tomatoes and chillies.","Cook until soft.","Cool slightly and grind.","Add seasoning if desired."]}
+  {
+    id:1,
+    en:{name:"Tomato Egg Curry", ingredients:["2 eggs","2 tomatoes","1 onion","1 green chilli","1/2 tsp chilli powder","1/4 tsp turmeric","Salt","1 tbsp oil"], steps:["Boil the eggs and peel them.","Heat oil and fry onion and green chilli.","Add tomato, turmeric, chilli powder and salt. Cook until soft.","Add a little water and simmer for 3 minutes.","Add eggs and cook for another 4 minutes."]},
+    te:{name:"టమాటా ఎగ్ కర్రీ", ingredients:["2 గుడ్లు","2 టమాటాలు","1 ఉల్లిపాయ","1 పచ్చిమిర్చి","1/2 tsp కారం","1/4 tsp పసుపు","ఉప్పు","1 tbsp నూనె"], steps:["గుడ్లను ఉడికించి పొట్టు తీసేయండి.","నూనె వేడి చేసి ఉల్లిపాయ, పచ్చిమిర్చి వేయించండి.","టమాటా, పసుపు, కారం, ఉప్పు వేసి మెత్తగా అయ్యే వరకు ఉడికించండి.","కొద్దిగా నీరు పోసి 3 నిమిషాలు మరిగించండి.","గుడ్లు వేసి మరో 4 నిమిషాలు ఉడికించండి."]},
+    keys:["egg","eggs","tomato","onion","గుడ్డు","గుడ్లు","టమాటా","ఉల్లిపాయ"], time:"20 min", serves:"2"
+  },
+  {
+    id:2,
+    en:{name:"Tomato Rice", ingredients:["2 cups cooked rice","2 tomatoes","1 onion","1 green chilli","1/2 tsp chilli powder","1/4 tsp turmeric","Salt","1 tbsp oil"], steps:["Heat oil and fry onion and chilli.","Add tomatoes, turmeric, chilli powder and salt.","Cook until tomato becomes soft.","Add cooked rice and mix gently.","Cook on low heat for 3 minutes and serve."]},
+    te:{name:"టమాటా రైస్", ingredients:["2 కప్పులు ఉడికిన అన్నం","2 టమాటాలు","1 ఉల్లిపాయ","1 పచ్చిమిర్చి","1/2 tsp కారం","1/4 tsp పసుపు","ఉప్పు","1 tbsp నూనె"], steps:["నూనె వేడి చేసి ఉల్లిపాయ, పచ్చిమిర్చి వేయించండి.","టమాటా, పసుపు, కారం, ఉప్పు వేయండి.","టమాటా మెత్తగా అయ్యే వరకు ఉడికించండి.","ఉడికిన అన్నం వేసి మెల్లగా కలపండి.","తక్కువ మంటపై 3 నిమిషాలు ఉంచి వడ్డించండి."]},
+    keys:["rice","tomato","onion","అన్నం","బియ్యం","టమాటా","ఉల్లిపాయ"], time:"15 min", serves:"2"
+  },
+  {
+    id:3,
+    en:{name:"Egg Fried Rice", ingredients:["2 cups cooked rice","2 eggs","1 small onion","1 green chilli","Salt","Pepper","1 tbsp oil"], steps:["Heat oil in a pan.","Add onion and chilli and fry for 2 minutes.","Crack eggs into the pan and scramble.","Add cooked rice, salt and pepper.","Mix well and cook for 3 minutes."]},
+    te:{name:"ఎగ్ ఫ్రైడ్ రైస్", ingredients:["2 కప్పులు ఉడికిన అన్నం","2 గుడ్లు","1 చిన్న ఉల్లిపాయ","1 పచ్చిమిర్చి","ఉప్పు","మిరియాల పొడి","1 tbsp నూనె"], steps:["పాన్‌లో నూనె వేడి చేయండి.","ఉల్లిపాయ, పచ్చిమిర్చి వేసి 2 నిమిషాలు వేయించండి.","గుడ్లు పగలగొట్టి వేసి కలుపుతూ ఉడికించండి.","అన్నం, ఉప్పు, మిరియాల పొడి వేయండి.","బాగా కలిపి 3 నిమిషాలు ఉడికించండి."]},
+    keys:["rice","egg","eggs","onion","అన్నం","బియ్యం","గుడ్డు","గుడ్లు","ఉల్లిపాయ"], time:"15 min", serves:"2"
+  },
+  {
+    id:4,
+    en:{name:"Onion Omelette", ingredients:["2 eggs","1 small onion","1 green chilli","Salt","Coriander","1 tsp oil"], steps:["Beat eggs in a bowl.","Add chopped onion, chilli, salt and coriander.","Heat oil in a pan.","Pour the egg mixture and cook both sides.","Serve hot."]},
+    te:{name:"ఉల్లిపాయ ఆమ్లెట్", ingredients:["2 గుడ్లు","1 చిన్న ఉల్లిపాయ","1 పచ్చిమిర్చి","ఉప్పు","కొత్తిమీర","1 tsp నూనె"], steps:["గిన్నెలో గుడ్లు బాగా కొట్టండి.","తరిగిన ఉల్లిపాయ, పచ్చిమిర్చి, ఉప్పు, కొత్తిమీర కలపండి.","పాన్‌లో నూనె వేడి చేయండి.","గుడ్డు మిశ్రమం పోసి రెండు వైపులా ఉడికించండి.","వేడిగా వడ్డించండి."]},
+    keys:["egg","eggs","onion","గుడ్డు","గుడ్లు","ఉల్లిపాయ"], time:"10 min", serves:"1"
+  },
+  {
+    id:5,
+    en:{name:"Simple Dal", ingredients:["1 cup toor dal","1 tomato","1 green chilli","1/4 tsp turmeric","Salt","2.5 cups water"], steps:["Wash the dal well.","Add dal, tomato, chilli, turmeric and water to a cooker.","Pressure cook until soft.","Add salt and mash lightly.","Serve with rice."]},
+    te:{name:"సింపుల్ పప్పు", ingredients:["1 కప్పు కందిపప్పు","1 టమాటా","1 పచ్చిమిర్చి","1/4 tsp పసుపు","ఉప్పు","2.5 కప్పుల నీరు"], steps:["పప్పును బాగా కడగండి.","కుక్కర్‌లో పప్పు, టమాటా, పచ్చిమిర్చి, పసుపు, నీరు వేయండి.","మెత్తగా అయ్యే వరకు ఉడికించండి.","ఉప్పు వేసి కొద్దిగా మెదపండి.","అన్నంతో వడ్డించండి."]},
+    keys:["dal","toor dal","tomato","పప్పు","కందిపప్పు","టమాటా"], time:"25 min", serves:"3"
+  }
 ];
 
-let ingredients=[];
+let lang = "te";
+let selected = [];
+
+function setLang(l){
+  lang=l;
+  document.getElementById("teBtn").classList.toggle("active",l==="te");
+  document.getElementById("enBtn").classList.toggle("active",l==="en");
+  document.getElementById("title").textContent = l==="te" ? "ఈరోజు ఏమి వండాలి?" : "What can I cook today?";
+  document.getElementById("subtitle").textContent = l==="te" ? "మీ దగ్గర ఉన్న పదార్థాలు ఇవ్వండి" : "Enter the ingredients you already have";
+  document.getElementById("findBtn").textContent = l==="te" ? "🍳 వంటకాలు చూపించు" : "🍳 Find My Recipes";
+  document.getElementById("suggestionTitle").textContent = l==="te" ? "వంటకాల సూచనలు" : "Recipe Suggestions";
+  renderResults(currentMatches);
+}
 
 function addIngredient(){
   const input=document.getElementById("ingredientInput");
-  const value=input.value.trim().toLowerCase();
-  if(!value) return;
-  value.split(",").map(x=>x.trim()).filter(Boolean).forEach(v=>{
-    if(!ingredients.includes(v)) ingredients.push(v);
-  });
+  const v=input.value.trim().toLowerCase();
+  if(v && !selected.includes(v)) selected.push(v);
   input.value="";
   renderChips();
 }
 
-document.getElementById("ingredientInput").addEventListener("keydown",e=>{
-  if(e.key==="Enter") addIngredient();
-});
-
 function renderChips(){
-  document.getElementById("chips").innerHTML=ingredients.map((x,i)=>
-    `<span class="chip">${x}<button onclick="removeIngredient(${i})">✕</button></span>`).join("");
+  document.getElementById("chips").innerHTML=selected.map((x,i)=>`<span class="chip">${x}<button onclick="removeIngredient(${i})">×</button></span>`).join("");
 }
-function removeIngredient(i){ingredients.splice(i,1);renderChips();}
+
+function removeIngredient(i){
+  selected.splice(i,1);
+  renderChips();
+}
+
+let currentMatches=[];
 
 function findRecipes(){
-  const box=document.getElementById("results");
-  if(!ingredients.length){box.className="empty";box.textContent="Please add at least one ingredient.";return;}
-  const matches=recipes.map(r=>{
-    const score=r.need.filter(n=>ingredients.some(i=>i.includes(n)||n.includes(i))).length/r.need.length;
-    return {...r,score};
-  }).filter(r=>r.score>=0.5).sort((a,b)=>b.score-a.score);
-
-  if(!matches.length){box.className="empty";box.textContent="No close match yet. Try adding tomato, onion, rice, potato or egg.";return;}
-  box.className="";
-  box.innerHTML=matches.map((r,idx)=>`
-    <div class="card">
-      <h3>${r.name}</h3>
-      <div class="meta">⏱ ${r.time} • ${Math.round(r.score*100)}% ingredient match</div>
-      <div class="why">Uses: ${r.need.join(", ")}</div>
-      <button class="cook" onclick="openRecipe(${recipes.indexOf(r)})">Start Cooking →</button>
-    </div>`).join("");
+  if(selected.length===0){
+    currentMatches=[];
+    document.getElementById("results").innerHTML=`<div class="empty">${lang==="te"?"ముందుగా కొన్ని పదార్థాలు జోడించండి.":"Please add a few ingredients first."}</div>`;
+    return;
+  }
+  currentMatches=recipes.map(r=>{
+    const matched=selected.filter(s=>r.keys.some(k=>k.includes(s)||s.includes(k))).length;
+    return {...r,score:matched};
+  }).filter(r=>r.score>0).sort((a,b)=>b.score-a.score);
+  renderResults(currentMatches);
 }
 
-function openRecipe(i){
-  const r=recipes[i];
-  document.getElementById("mTitle").textContent=r.name;
-  document.getElementById("mMeta").textContent="⏱ "+r.time;
-  document.getElementById("mIngredients").innerHTML=r.ingredients.map(x=>`<li>${x}</li>`).join("");
-  document.getElementById("mSteps").innerHTML=r.steps.map(x=>`<li>${x}</li>`).join("");
+function renderResults(list){
+  const box=document.getElementById("results");
+  if(!list || list.length===0){
+    box.innerHTML=`<div class="empty">${lang==="te"?"పదార్థాలు జోడించి “వంటకాలు చూపించు” నొక్కండి.":"Add a few ingredients and tap “Find My Recipes”."}</div>`;
+    return;
+  }
+  box.innerHTML=list.map(r=>{
+    const t=r[lang];
+    return `<div class="card">
+      <h3>${t.name}</h3>
+      <div class="meta">⏱ ${r.time} &nbsp; • &nbsp; 👥 ${r.serves}</div>
+      <div class="match">${lang==="te"?`${r.score} పదార్థాలు సరిపడ్డాయి`:`${r.score} ingredient match${r.score>1?"es":""}`}</div>
+      <button class="cook" onclick="openRecipe(${r.id})">${lang==="te"?"వంట విధానం":"View Recipe"}</button>
+    </div>`;
+  }).join("");
+}
+
+function openRecipe(id){
+  const r=recipes.find(x=>x.id===id), t=r[lang];
+  document.getElementById("recipeDetail").innerHTML=`
+    <h2>${t.name}</h2>
+    <span class="pill">⏱ ${r.time}</span><span class="pill">👥 ${r.serves}</span>
+    <h4>${lang==="te"?"పదార్థాలు":"Ingredients"}</h4>
+    <ul>${t.ingredients.map(x=>`<li>${x}</li>`).join("")}</ul>
+    <h4>${lang==="te"?"వంట విధానం":"Steps"}</h4>
+    <ol>${t.steps.map(x=>`<li>${x}</li>`).join("")}</ol>`;
   document.getElementById("modal").style.display="flex";
 }
-function closeRecipe(){document.getElementById("modal").style.display="none";}
-</script>
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+
+function closeModal(){document.getElementById("modal").style.display="none";}
+
+renderResults([]);
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 }
 </script>
 </body>
