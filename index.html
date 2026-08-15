@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#176f2b">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg">
-<title>VantaMitra V18</title>
+<title>VantaMitra V19</title>
 <style>
 *{box-sizing:border-box}
 :root{--g:#176f2b;--g2:#2da44e;--o:#f47a20;--bg:#f5f7f3;--soft:#edf7ea;--line:#e3e7df;--text:#1f2b20;--muted:#70776f;--warn:#fff7e8;--shadow:0 10px 28px #00000012}
@@ -75,6 +75,23 @@ main{padding:11px 14px}
 .listCard img{width:92px;height:92px;object-fit:cover}.listBody{padding:9px 9px 9px 0}.listBody h3{margin:0 0 4px;font-size:14px}
 .shopItem{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #eee;padding:10px 0}.shopItem label{display:flex;align-items:center;gap:8px}
 footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-size:11px}
+
+
+/* V19 Today Intelligence */
+.todayCard{background:linear-gradient(135deg,#fff7e6,#eef9ea);border:1px solid #e6eadf;border-radius:18px;padding:12px;margin:10px 0 12px;box-shadow:0 5px 16px #0000000a}
+.todayTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.todayTop h2{font-size:18px;margin:0 0 3px}.todayTop p{font-size:10px;color:var(--muted);margin:0;line-height:1.35}
+.mealNow{background:var(--g);color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800;white-space:nowrap}
+.todayRecipe{display:grid;grid-template-columns:88px 1fr;gap:10px;margin-top:10px;align-items:center}
+.todayRecipe img{width:88px;height:76px;object-fit:cover;border-radius:13px}
+.todayRecipe h3{font-size:15px;margin:0 0 4px;line-height:1.2}
+.todayReason{font-size:10px;color:#58715b;line-height:1.35;margin-bottom:6px}
+.todayActions{display:flex;gap:6px;flex-wrap:wrap}
+.todayActions button{border:0;border-radius:999px;padding:8px 10px;font-size:10px;font-weight:700}
+.todayPrimary{background:var(--o);color:#fff}.todaySecondary{background:#edf3ea;color:var(--g)}
+.todayMini{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.todayMini div{background:#ffffffc9;border:1px solid #e8ebE4;border-radius:12px;padding:7px;text-align:center}
+.todayMini b{display:block;font-size:12px;color:var(--g)}.todayMini span{font-size:8px;color:#70776f}
 
 /* Planner */
 .plannerHero{background:linear-gradient(135deg,#176f2b,#2da44e);color:#fff;border-radius:18px;padding:14px;margin-bottom:12px}
@@ -148,13 +165,26 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <body>
 <div class="app">
 <header>
-<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V18</span></div>
+<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V19</span></div>
 <div class="sub">వంట మిత్ర • Your Cooking Friend</div>
 <div class="lang"><button id="teBtn" class="active" onclick="setLang('te')">తెలుగు</button><button id="enBtn" onclick="setLang('en')">English</button></div>
 </header>
 
 <main id="homePage" class="pagePanel activePage">
 <div class="hero"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=82" alt="Food"><div class="heroText"><h1 id="title">ఈరోజు ఏమి వండాలి?</h1><p id="subtitle">మీ పదార్థాలకు సరిపోయే వంటకాలు ముందుగా.</p></div></div>
+
+<div class="todayCard" id="todayCard">
+  <div class="todayTop">
+    <div><h2 id="todayTitle">🍽 ఈరోజు ఏమి వండాలి?</h2><p id="todaySubtitle">సమయం, మీ పదార్థాలు, Meal Plan ఆధారంగా స్మార్ట్ సూచన.</p></div>
+    <span class="mealNow" id="mealNow">Now</span>
+  </div>
+  <div class="todayRecipe" id="todayRecipe"></div>
+  <div class="todayMini">
+    <div><b id="todayMatch">0</b><span id="todayMatchLabel">Ingredients match</span></div>
+    <div><b id="todayTime">—</b><span id="todayTimeLabel">Cook time</span></div>
+    <div><b id="todaySource">Smart</b><span id="todaySourceLabel">Source</span></div>
+  </div>
+</div>
 <div class="resumeBox" id="resumeBox"><div class="resumeTop"><div class="resumeInfo"><b id="resumeTitle">👨‍🍳 వంట కొనసాగించండి</b><span id="resumeMeta"></span></div><button onclick="resumeCooking()" id="resumeBtn">Continue</button></div></div>
 <div class="compactBar"><div><b id="compactTitle">🥕 పదార్థాలు</b><div class="compactMeta" id="compactMeta">ఇంకా జోడించలేదు</div></div><button onclick="toggleIngredients()" id="editIngredientsBtn">జోడించు</button></div>
 <div class="collapsible" id="ingredientPanel"><div class="collapBody">
@@ -187,7 +217,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <div class="planGrocery"><h3 id="planGroceryTitle">🛒 ప్లాన్‌కు కావాల్సిన పదార్థాలు</h3><div id="planGroceryList"></div><button class="find" onclick="copyPlanToShopping()" id="copyPlanBtn">Shopping List కు జోడించు</button></div>
 </main>
 <main id="shoppingPage" class="pagePanel"><div class="pageTitle"><h2 id="shopPageTitle">🛒 షాపింగ్ లిస్ట్</h2><button class="pill" onclick="clearShopping()" id="clearShopBtn">Clear</button></div><div id="shoppingList"></div></main>
-<footer>VantaMitra V18 • Weekly meal planner + smart grocery list</footer>
+<footer>VantaMitra V19 • Today intelligence + weekly meal planner</footer>
 </div>
 
 <nav class="bottomNav">
@@ -232,17 +262,74 @@ function safePhoto(r){return r.photo||'https://images.unsplash.com/photo-1504674
 function dayLabel(d){const te={mon:'సోమవారం',tue:'మంగళవారం',wed:'బుధవారం',thu:'గురువారం',fri:'శుక్రవారం',sat:'శనివారం',sun:'ఆదివారం'},en={mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'};return (lang==='te'?te:en)[d]}
 function mealLabelName(m){const te={breakfast:'ఉదయం',lunch:'మధ్యాహ్నం',dinner:'రాత్రి'},en={breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner'};return (lang==='te'?te:en)[m]}
 
+
+function currentMealType(){
+ const h=new Date().getHours();
+ if(h<11)return 'breakfast';
+ if(h<16)return 'lunch';
+ return 'dinner';
+}
+function currentPlanDay(){
+ const d=new Date().getDay();
+ return ['sun','mon','tue','wed','thu','fri','sat'][d];
+}
+function todaySmartPick(){
+ const meal=currentMealType(), day=currentPlanDay(), p=getMealPlan();
+ const planId=p[mealKey(day,meal)];
+ if(planId){
+   const r=recipes.find(x=>x.id===planId);
+   if(r){
+     const q=rank(r);
+     return {...r,...q,_source:'plan'};
+   }
+ }
+ let pool=recipes.filter(r=>r.meal.includes(meal));
+ if(!pool.length)pool=recipes.slice();
+ let ranked=pool.map(r=>({...r,...rank(r)}));
+ ranked.sort((a,b)=>{
+   if(selected.length){
+     return Number(b.cookNow)-Number(a.cookNow)||b.points-a.points||Number(b.popular)-Number(a.popular);
+   }
+   return Number(b.popular)-Number(a.popular)||Number(b.quick)-Number(a.quick);
+ });
+ const r=ranked[0]||recipes[0];
+ return {...r,_source:selected.length?'ingredients':'smart'};
+}
+function renderToday(){
+ const r=todaySmartPick(); if(!r)return;
+ const meal=currentMealType();
+ mealNow.textContent=mealLabelName(meal);
+ const t=r[lang];
+ let reason='';
+ if(r._source==='plan') reason=lang==='te'?'📅 ఈరోజు Meal Plan లో ఉన్న వంటకం.':'📅 From today’s meal plan.';
+ else if(selected.length&&r.matches) reason=lang==='te'?`🥕 మీ దగ్గర ఉన్న ${r.matches} పదార్థాలు మ్యాచ్ అయ్యాయి.`:`🥕 ${r.matches} of your ingredients match.`;
+ else if(r.quick) reason=lang==='te'?'⚡ త్వరగా తయారయ్యే మంచి ఎంపిక.':'⚡ A quick option for right now.';
+ else reason=lang==='te'?'✨ సమయం మరియు పాపులారిటీ ఆధారంగా సూచన.':'✨ Suggested for this time of day.';
+ todayRecipe.innerHTML=`<img src="${safePhoto(r)}" alt="${t.name}"><div><h3>${t.name}</h3><div class="todayReason">${reason}</div><div class="todayActions"><button class="todayPrimary" onclick="openRecipe(${r.id})">${lang==='te'?'వంటకం చూడండి':'View Recipe'}</button><button class="todaySecondary" onclick="startTodayCooking(${r.id})">${lang==='te'?'▶ ఇప్పుడే వండండి':'▶ Cook Now'}</button></div></div>`;
+ todayMatch.textContent=selected.length?(r.matches||0):'—';
+ todayTime.textContent=r.time;
+ todaySource.textContent=r._source==='plan'?(lang==='te'?'Plan':'Plan'):(r._source==='ingredients'?(lang==='te'?'పదార్థాలు':'Pantry'):'Smart');
+}
+function startTodayCooking(id){
+ currentRecipeId=id;
+ const r=recipes.find(x=>x.id===id);
+ currentServe=parseInt(r.serves)||1;
+ cookStep=0;
+ openCookingUI(true);
+}
+
 function setLang(l){lang=l;teBtn.classList.toggle('active',l==='te');enBtn.classList.toggle('active',l==='en');
 title.textContent=l==='te'?'ఈరోజు ఏమి వండాలి?':'What can I cook today?';subtitle.textContent=l==='te'?'మీ పదార్థాలకు సరిపోయే వంటకాలు ముందుగా.':'Best recipes for your ingredients, first.';
 compactTitle.textContent=l==='te'?'🥕 పదార్థాలు':'🥕 Ingredients';editIngredientsBtn.textContent=l==='te'?'జోడించు':'Add';quickLabel.textContent=l==='te'?'త్వరగా జోడించండి':'Quick add';personalTitle.textContent=l==='te'?'✨ మీ కోసం':'✨ For You';popularTitle.textContent=l==='te'?'🔥 పాపులర్':'🔥 Popular';quickTitle.textContent=l==='te'?'⚡ త్వరగా అయ్యేవి':'⚡ Quick Recipes';filterBtn.textContent=l==='te'?'⚙ ఫిల్టర్లు':'⚙ Filters';dietLabel.textContent=l==='te'?'ఆహార రకం':'Diet';mealLabel.textContent=l==='te'?'సమయం':'Meal';catLabel.textContent=l==='te'?'కేటగిరీలు':'Categories';
 ingredientInput.placeholder=l==='te'?'టమాటా / tomato':'e.g. tomato, rice, egg';recipeSearch.placeholder=l==='te'?'వంటకం వెతకండి...':'Search recipes...';pageSearch.placeholder=l==='te'?'వంటకం పేరు...':'Recipe name...';findBtn.textContent=l==='te'?'🧠 స్మార్ట్ వంటకాలు చూపించు':'🧠 Smart Recipe Match';suggestionTitle.textContent=l==='te'?'వంటకాల సూచనలు':'Recipe Suggestions';searchPageTitle.textContent=l==='te'?'🔎 వంటకం వెతకండి':'🔎 Search Recipes';favPageTitle.textContent=l==='te'?'♥ ఇష్టమైన వంటకాలు':'♥ Favorite Recipes';shopPageTitle.textContent=l==='te'?'🛒 షాపింగ్ లిస్ట్':'🛒 Shopping List';clearShopBtn.textContent=l==='te'?'క్లియర్':'Clear';
+todayTitle.textContent=l==='te'?'🍽 ఈరోజు ఏమి వండాలి?':'🍽 What should I cook now?';todaySubtitle.textContent=l==='te'?'సమయం, మీ పదార్థాలు, Meal Plan ఆధారంగా స్మార్ట్ సూచన.':'Smart suggestion using time, your ingredients and meal plan.';todayMatchLabel.textContent=l==='te'?'పదార్థాల మ్యాచ్':'Ingredients match';todayTimeLabel.textContent=l==='te'?'వంట సమయం':'Cook time';todaySourceLabel.textContent=l==='te'?'సూచన ఆధారం':'Source';
 plannerTitle.textContent=l==='te'?'📅 వారపు భోజన ప్లాన్':'📅 Weekly Meal Planner';plannerSubtitle.textContent=l==='te'?'Breakfast, Lunch, Dinner కోసం మీ వారం ముందుగానే ప్లాన్ చేయండి.':'Plan breakfast, lunch and dinner for the whole week.';autoPlanBtn.textContent=l==='te'?'✨ వారం ఆటో ప్లాన్':'✨ Auto Plan Week';clearPlanBtn.textContent=l==='te'?'ప్లాన్ క్లియర్':'Clear Plan';planMealsLabel.textContent=l==='te'?'ప్లాన్ చేసిన భోజనాలు':'Meals planned';planRecipesLabel.textContent=l==='te'?'వంటకాలు':'Recipes';planItemsLabel.textContent=l==='te'?'గ్రాసరీ పదార్థాలు':'Grocery items';planGroceryTitle.textContent=l==='te'?'🛒 ప్లాన్‌కు కావాల్సిన పదార్థాలు':'🛒 Ingredients for this plan';copyPlanBtn.textContent=l==='te'?'Shopping List కు జోడించు':'Add to Shopping List';planPickerTitle.textContent=l==='te'?'వంటకం ఎంచుకోండి':'Choose Recipe';planSearch.placeholder=l==='te'?'వంటకం వెతకండి...':'Search recipe...';
 statRecipes.textContent=l==='te'?'వంటకాలు':'recipes';statFav.textContent=l==='te'?'ఇష్టమైనవి':'favorites';statPantry.textContent=l==='te'?'పదార్థాలు':'ingredients';navHome.textContent=l==='te'?'హోమ్':'Home';navSearch.textContent=l==='te'?'వెతకండి':'Search';navPlanner.textContent=l==='te'?'ప్లాన్':'Plan';navFav.textContent=l==='te'?'ఫేవరెట్స్':'Favorites';navShop.textContent=l==='te'?'షాపింగ్':'Shopping';
 cookModeTitle.textContent=l==='te'?'👨‍🍳 వంట మోడ్':'👨‍🍳 Cooking Mode';cookPrevBtn.textContent=l==='te'?'← ముందు':'← Previous';cookNextBtn.textContent=l==='te'?'తర్వాత →':'Next →';doneTitle.textContent=l==='te'?'వంట పూర్తైంది!':'Cooking complete!';doneText.textContent=l==='te'?'బాగా చేసారు. ఇప్పుడు సర్వ్ చేయండి.':'Great job. Your dish is ready to serve.';doneBtn.textContent=l==='te'?'పూర్తైంది':'Done';cookTip.textContent=l==='te'?'💡 చిట్కా: మొదలుపెట్టే ముందు అన్ని పదార్థాలు సిద్ధంగా ఉంచండి.':'💡 Tip: Keep ingredients ready before you start.';speakBtn.textContent=l==='te'?'🔊 స్టెప్ చదవండి':'🔊 Read step';stopSpeakBtn.textContent=l==='te'?'⏹ వాయిస్ ఆపు':'⏹ Stop voice';customTimerInput.placeholder=l==='te'?'నిమిషాలు':'Minutes';customTimerBtn.textContent=l==='te'?'టైమర్ ప్రారంభించు':'Start timer';resumeTitle.textContent=l==='te'?'👨‍🍳 వంట కొనసాగించండి':'👨‍🍳 Resume cooking';resumeBtn.textContent=l==='te'?'కొనసాగించు':'Continue';
-updateWakeButton();renderAll();renderResumeBox();renderPlanner();
+updateWakeButton();renderAll();renderResumeBox();renderPlanner();renderToday();
 }
 
-function renderAll(){renderQuick();renderPopular();renderQuickMeals();renderCats();renderChips();renderPersonalized();renderResults();renderSearchPage();renderFavorites();renderShopping();updateStats()}
+function renderAll(){renderQuick();renderPopular();renderQuickMeals();renderCats();renderChips();renderPersonalized();renderResults();renderSearchPage();renderFavorites();renderShopping();updateStats();renderToday()}
 function toggleIngredients(){ingredientPanel.classList.toggle('open')}
 function updateCompactMeta(){compactMeta.textContent=selected.length?(lang==='te'?`${selected.length} పదార్థాలు జోడించారు`:`${selected.length} ingredients added`):(lang==='te'?'ఇంకా జోడించలేదు':'None added yet')}
 function renderQuick(){quickIngredients.innerHTML=quick.map(x=>`<button class="pill" onclick="quickAdd('${x[0]}')">+ ${lang==='te'?x[1]:x[0]}</button>`).join('')}
@@ -251,11 +338,11 @@ function renderPopular(){const list=recipes.filter(r=>r.popular).slice(0,10);pop
 function renderQuickMeals(){const list=recipes.filter(r=>r.quick).slice(0,12);quickCount.textContent=list.length;quickCarousel.innerHTML=list.map(r=>featureCard(r,'⚡ Quick')).join('')}
 function renderCats(){catButtons.innerHTML=cats.map(c=>`<button class="pill catbtn ${category===c?'active':''}" onclick="setCategory('${c}',this)">${c==='all'?'All':c}</button>`).join('')}
 function toggleFilters(){filters.classList.toggle('open')}
-function addTokens(text){text.split(/,|\band\b|\+| మరియు | అలాగే /i).map(normalize).filter(Boolean).forEach(v=>{if(!selected.includes(v))selected.push(v)});renderChips();updateStats();renderPersonalized()}
-function quickAdd(v){if(!selected.includes(v))selected.push(v);renderChips();updateStats();renderPersonalized()}
+function addTokens(text){text.split(/,|\band\b|\+| మరియు | అలాగే /i).map(normalize).filter(Boolean).forEach(v=>{if(!selected.includes(v))selected.push(v)});renderChips();updateStats();renderPersonalized();renderToday()}
+function quickAdd(v){if(!selected.includes(v))selected.push(v);renderChips();updateStats();renderPersonalized();renderToday()}
 function addIngredient(){addTokens(ingredientInput.value);ingredientInput.value=''}
 function renderChips(){chips.innerHTML=selected.map((x,i)=>`<span class="chip">${dIng(x)} <button onclick="removeIngredient(${i})">×</button></span>`).join('');updateCompactMeta()}
-function removeIngredient(i){selected.splice(i,1);renderChips();updateStats();renderPersonalized()}
+function removeIngredient(i){selected.splice(i,1);renderChips();updateStats();renderPersonalized();renderToday()}
 function setDiet(d,b){diet=d;document.querySelectorAll('.dietbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderResults()}
 function setMeal(m,b){meal=m;document.querySelectorAll('.mealbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderResults()}
 function setCategory(c,b){category=c;document.querySelectorAll('.catbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderResults()}
@@ -263,23 +350,23 @@ function matches(k,s){k=normalize(k);s=normalize(s);return k===s||k.includes(s)|
 function rank(r){const mk=r.keys.filter(k=>selected.some(s=>matches(k,s)));const um=[...new Set(mk)].length,cov=r.keys.length?um/r.keys.length:0,missing=r.keys.filter(k=>!selected.some(s=>matches(k,s))),cookNow=selected.length>0&&(cov>=.67||(cov>=.5&&missing.length<=1));return{matches:um,coverage:cov,missing,cookNow,points:cov*165+um*25-missing.length*5+(cookNow?25:0)+(r.popular?5:0)}}
 function renderPersonalized(){let list;if(selected.length){list=recipes.map(r=>{const q=rank(r);return{...r,...q}}).filter(r=>r.matches>0).sort((a,b)=>Number(b.cookNow)-Number(a.cookNow)||b.points-a.points).slice(0,3)}else{list=recipes.filter(r=>r.popular).slice(0,3)}if(list.length<3)return;const reason=r=>selected.length?(r.cookNow?(lang==='te'?'ఇప్పుడే చేయొచ్చు':'Cook now'):(lang==='te'?`${r.matches} పదార్థాలు మ్యాచ్`:`${r.matches} ingredient match`)):(lang==='te'?'పాపులర్ ఎంపిక':'Popular pick');personalized.innerHTML=`<div class="bigRec" onclick="openRecipe(${list[0].id})"><img src="${safePhoto(list[0])}"><div class="recOverlay"><div><span class="reason">${reason(list[0])}</span><h3>${list[0][lang].name}</h3><div class="meta">⏱ ${list[0].time}</div></div></div></div><div class="stack">${list.slice(1).map(r=>`<div class="smallRec" onclick="openRecipe(${r.id})"><img src="${safePhoto(r)}"><div class="recOverlay"><div><span class="reason">${reason(r)}</span><h3>${r[lang].name}</h3></div></div></div>`).join('')}</div>`}
 function findRecipes(){if(!selected.length){smartBox.style.display='block';smartBox.textContent=lang==='te'?'ముందుగా కనీసం ఒక పదార్థం జోడించండి.':'Add at least one ingredient first.';ingredientPanel.classList.add('open');return}currentMatches=recipes.map(r=>{const q=rank(r);return{...r,...q}}).filter(r=>r.matches>0).sort((a,b)=>Number(b.cookNow)-Number(a.cookNow)||b.points-a.points||b.coverage-a.coverage||b.matches-a.matches);const ready=currentMatches.filter(r=>r.cookNow).length;smartBox.style.display='block';smartBox.innerHTML=lang==='te'?`🧠 <b>${ready}</b> వంటకాలు మీ దగ్గర ఉన్న పదార్థాలతో దాదాపు వెంటనే చేయవచ్చు.`:`🧠 <b>${ready}</b> recipes are almost cookable with what you have.`;ingredientPanel.classList.remove('open');renderPersonalized();renderResults();suggestionTitle.scrollIntoView({behavior:'smooth',block:'start'})}
-function getFav(){try{return JSON.parse(localStorage.getItem('vm18fav')||'[]')}catch(e){return[]}}
-function isFav(id){return getFav().includes(id)}function toggleFav(id,e){if(e)e.stopPropagation();let f=getFav();f=f.includes(id)?f.filter(x=>x!==id):[...f,id];localStorage.setItem('vm18fav',JSON.stringify(f));renderFavorites();updateStats();renderResults()}
+function getFav(){try{return JSON.parse(localStorage.getItem('vm19fav')||'[]')}catch(e){return[]}}
+function isFav(id){return getFav().includes(id)}function toggleFav(id,e){if(e)e.stopPropagation();let f=getFav();f=f.includes(id)?f.filter(x=>x!==id):[...f,id];localStorage.setItem('vm19fav',JSON.stringify(f));renderFavorites();updateStats();renderResults()}
 function filtered(){let list=(selected.length&&currentMatches.length)?currentMatches:recipes.map(r=>{const q=rank(r);return{...r,...q}});if(diet!=='all')list=list.filter(r=>r.diet===diet);if(meal!=='all')list=list.filter(r=>r.meal.includes(meal));if(category!=='all')list=list.filter(r=>r.category===category);const q=recipeSearch.value.trim().toLowerCase();if(q)list=list.filter(r=>r.searchText.includes(q)||r.en.name.toLowerCase().includes(q)||r.te.name.includes(q));return list}
 function renderResults(){let list=filtered(),intent=selected.length||recipeSearch.value.trim()||diet!=='all'||meal!=='all'||category!=='all';if(!intent){results.innerHTML=`<div class="empty">${lang==='te'?'పదార్థాలు జోడించండి లేదా వంటకం వెతకండి.':'Add ingredients or search for a recipe.'}</div>`;count.textContent='';return}if(!list.length){results.innerHTML=`<div class="empty">${lang==='te'?'సరిపడే వంటకం దొరకలేదు.':'No matching recipe found.'}</div>`;count.textContent='0';return}list=list.slice(0,50);count.textContent=`${list.length} / ${recipes.length}`;results.innerHTML=list.map(r=>recipeCard(r)).join('')}
 function recipeCard(r){const t=r[lang],pct=Math.round((r.coverage||0)*100),matchLine=selected.length?`<div class="score">${r.matches} ${lang==='te'?'మ్యాచ్':'match'} • ${pct}%</div>`:'',missing=selected.length&&r.missing?.length?`<div class="missing">${lang==='te'?'ఇంకా కావాల్సినవి: ':'Still needed: '}${r.missing.slice(0,3).map(dIng).join(', ')}</div>`:'';return`<div class="card"><div class="pic"><img loading="lazy" src="${safePhoto(r)}" alt="${t.name}">${r.cookNow?`<span class="now">${lang==='te'?'ఇప్పుడే':'Cook now'}</span>`:''}<button class="heart" onclick="toggleFav(${r.id},event)">${isFav(r.id)?'♥':'♡'}</button></div><div class="body"><h3>${t.name}</h3><div class="meta">⏱ ${r.time} • 👥 ${r.serves}</div>${matchLine}${missing}<div><span class="tag">${r.diet==='veg'?'🥬 Veg':'🍗 Non-Veg'}</span><span class="tag">${r.category}</span></div><button class="view" onclick="openRecipe(${r.id})">${lang==='te'?'వంట విధానం':'View Recipe'}</button></div></div>`}
 function renderSearchPage(){const q=(pageSearch?.value||'').trim().toLowerCase();let list=q?recipes.filter(r=>r.searchText.includes(q)||r.en.name.toLowerCase().includes(q)||r.te.name.includes(q)):recipes.slice(0,30);searchResults.innerHTML=list.slice(0,50).map(r=>recipeCard(r)).join('')}
 function renderFavorites(){const f=getFav(),list=f.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);favPageCount.textContent=list.length;favoriteList.innerHTML=list.length?list.map(r=>`<div class="listCard"><img src="${safePhoto(r)}"><div class="listBody"><h3>${r[lang].name}</h3><div class="meta">⏱ ${r.time} • ${r.category}</div><div class="toolbar"><button class="pill" onclick="openRecipe(${r.id})">${lang==='te'?'చూడండి':'View'}</button><button class="pill" onclick="toggleFav(${r.id})">${lang==='te'?'తొలగించు':'Remove'}</button></div></div></div>`).join(''):`<div class="empty">${lang==='te'?'ఇంకా ఇష్టమైన వంటకాలు లేవు.':'No favorites yet.'}</div>`}
-function getShop(){try{return JSON.parse(localStorage.getItem('vm18shop')||'[]')}catch(e){return[]}}
-function saveShop(s){localStorage.setItem('vm18shop',JSON.stringify([...new Set(s)]));renderShopping()}
+function getShop(){try{return JSON.parse(localStorage.getItem('vm19shop')||'[]')}catch(e){return[]}}
+function saveShop(s){localStorage.setItem('vm19shop',JSON.stringify([...new Set(s)]));renderShopping()}
 function addMissingToShop(id){const r=recipes.find(x=>x.id===id),q=rank(r);saveShop([...getShop(),...q.missing]);alert(lang==='te'?'షాపింగ్ లిస్ట్‌లో జోడించాం.':'Added to shopping list.')}
 function renderShopping(){const s=getShop();shoppingList.innerHTML=s.length?s.map((x,i)=>`<div class="shopItem"><label><input type="checkbox"> <span>${dIng(x)}</span></label><button class="pill" onclick="removeShop(${i})">×</button></div>`).join(''):`<div class="empty">${lang==='te'?'షాపింగ్ లిస్ట్ ఖాళీగా ఉంది.':'Shopping list is empty.'}</div>`}
 function removeShop(i){const s=getShop();s.splice(i,1);saveShop(s)}function clearShopping(){saveShop([])}
 function scaleText(txt,ratio){return txt.replace(/(\d+(?:\.\d+)?)(\s*)(cups?|cup|tbsp|tsp|g|kg|ml|litre|litres|eggs?|tomatoes?|onions?|potatoes?)/gi,(m,n,s,u)=>{let v=parseFloat(n)*ratio;v=Math.round(v*100)/100;return `${v}${s}${u}`})}
 
 /* Meal Planner */
-function getMealPlan(){try{return JSON.parse(localStorage.getItem('vm18mealplan')||'{}')}catch(e){return{}}}
-function saveMealPlan(p){localStorage.setItem('vm18mealplan',JSON.stringify(p));renderPlanner()}
+function getMealPlan(){try{return JSON.parse(localStorage.getItem('vm19mealplan')||'{}')}catch(e){return{}}}
+function saveMealPlan(p){localStorage.setItem('vm19mealplan',JSON.stringify(p));renderPlanner();renderToday()}
 function mealKey(day,meal){return day+'_'+meal}
 function renderPlanner(){
  const p=getMealPlan();
@@ -311,7 +398,7 @@ function renderPlanPicker(){
  planPickerList.innerHTML=list.map(r=>`<div class="planRecipe"><img src="${safePhoto(r)}" alt="${r[lang].name}"><div><h4>${r[lang].name}</h4><div class="meta">⏱ ${r.time} • ${r.category}</div></div><button onclick="assignPlanRecipe(${r.id})">${lang==='te'?'ఎంచుకో':'Choose'}</button></div>`).join('');
 }
 function assignPlanRecipe(id){if(!planTargetDay||!planTargetMeal)return;const p=getMealPlan();p[mealKey(planTargetDay,planTargetMeal)]=id;saveMealPlan(p);closePlanPicker()}
-function clearMealPlan(){localStorage.removeItem('vm18mealplan');renderPlanner()}
+function clearMealPlan(){localStorage.removeItem('vm19mealplan');renderPlanner()}
 function autoPlanWeek(){
  const p={};
  let used=[];
@@ -351,8 +438,8 @@ modal.style.display='flex'}
 function changeServe(d){currentServe=Math.max(1,currentServe+d);renderDetail()}
 
 /* Cooking progress features from V17 */
-function saveCookingProgress(){if(!currentRecipeId)return;localStorage.setItem('vm18cooking',JSON.stringify({recipeId:currentRecipeId,step:cookStep,serve:currentServe,updated:Date.now()}));renderResumeBox()}
-function getCookingProgress(){try{return JSON.parse(localStorage.getItem('vm18cooking')||'null')}catch(e){return null}}
+function saveCookingProgress(){if(!currentRecipeId)return;localStorage.setItem('vm19cooking',JSON.stringify({recipeId:currentRecipeId,step:cookStep,serve:currentServe,updated:Date.now()}));renderResumeBox()}
+function getCookingProgress(){try{return JSON.parse(localStorage.getItem('vm19cooking')||'null')}catch(e){return null}}
 function renderResumeBox(){const p=getCookingProgress();if(!p){resumeBox.classList.remove('show');return}const r=recipes.find(x=>x.id===p.recipeId);if(!r){resumeBox.classList.remove('show');return}resumeBox.classList.add('show');resumeMeta.textContent=(lang==='te'?`${r[lang].name} • స్టెప్ ${p.step+1} / ${r[lang].steps.length}`:`${r[lang].name} • Step ${p.step+1} / ${r[lang].steps.length}`)}
 function resumeCooking(){const p=getCookingProgress();if(!p)return;const r=recipes.find(x=>x.id===p.recipeId);if(!r)return;currentRecipeId=p.recipeId;currentServe=p.serve||parseInt(r.serves)||1;cookStep=Math.max(0,Math.min(p.step||0,r[lang].steps.length-1));openCookingUI(false)}
 function startCookingMode(){cookStep=0;openCookingUI(true)}
@@ -361,8 +448,8 @@ function updateCookMode(){const r=recipes.find(x=>x.id===currentRecipeId);if(!r)
 function cookPrev(){if(cookStep>0){cookStep--;stopSpeaking();updateCookMode()}}
 function cookNext(){const r=recipes.find(x=>x.id===currentRecipeId),steps=r[lang].steps;stopSpeaking();if(cookStep<steps.length-1){cookStep++;updateCookMode()}else{showCookDone()}}
 function showCookDone(){cookStepText.style.display='none';cookStepCounter.style.display='none';cookProgress.parentElement.style.display='none';cookPrevBtn.style.display='none';cookNextBtn.style.display='none';document.querySelector('.timerRow').style.display='none';document.querySelector('.customTimer').style.display='none';document.querySelector('.voiceRow').style.display='none';cookTimer.style.display='none';cookTip.style.display='none';doneBox.style.display='block'}
-function finishCooking(){localStorage.removeItem('vm18cooking');renderResumeBox();closeCookingMode()}
-function rateDish(n){localStorage.setItem('vm18rating_'+currentRecipeId,String(n));alert(lang==='te'?'ధన్యవాదాలు! మీ రేటింగ్ సేవ్ అయ్యింది.':'Thanks! Your rating was saved.')}
+function finishCooking(){localStorage.removeItem('vm19cooking');renderResumeBox();closeCookingMode()}
+function rateDish(n){localStorage.setItem('vm19rating_'+currentRecipeId,String(n));alert(lang==='te'?'ధన్యవాదాలు! మీ రేటింగ్ సేవ్ అయ్యింది.':'Thanks! Your rating was saved.')}
 function closeCookingMode(){cookFullscreen.classList.remove('open');clearInterval(cookTimer._t);stopSpeaking();releaseWakeLock();renderResumeBox()}
 function startCookTimer(min){let left=min*60;cookTimer.style.display='block';clearInterval(cookTimer._t);cookTimer._t=setInterval(()=>{const mm=Math.floor(left/60),ss=left%60;cookTimer.textContent=`⏱ ${mm}:${String(ss).padStart(2,'0')}`;left--;if(left<0){clearInterval(cookTimer._t);cookTimer.textContent=lang==='te'?'✅ టైమర్ పూర్తైంది':'✅ Timer done'}},1000)}
 function startCustomTimer(){const n=parseInt(customTimerInput.value||'0');if(!n||n<1){alert(lang==='te'?'నిమిషాలు నమోదు చేయండి.':'Enter minutes.');return}startCookTimer(Math.min(n,180))}
@@ -378,7 +465,7 @@ function updateStats(){favCount.textContent=getFav().length;pantryCount.textCont
 function startVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert(lang==='te'?'ఈ బ్రౌజర్‌లో వాయిస్ ఇన్‌పుట్ అందుబాటులో లేదు.':'Voice input is not supported in this browser.');return}const rec=new SR();rec.lang=lang==='te'?'te-IN':'en-IN';rec.interimResults=false;rec.maxAlternatives=1;micBtn.textContent='●';rec.onresult=e=>{const heard=e.results[0][0].transcript;ingredientInput.value=heard;addTokens(heard);ingredientInput.value=''};rec.onend=()=>{micBtn.textContent='🎤'};rec.start()}
 function showPage(pageId,navId){document.querySelectorAll('.pagePanel').forEach(p=>p.classList.remove('activePage'));document.getElementById(pageId).classList.add('activePage');document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('navActive'));document.getElementById(navId).classList.add('navActive');if(pageId==='favoritesPage')renderFavorites();if(pageId==='shoppingPage')renderShopping();if(pageId==='searchPage')renderSearchPage();if(pageId==='plannerPage')renderPlanner();window.scrollTo({top:0,behavior:'smooth'})}
 
-renderAll();renderResumeBox();renderPlanner();
+renderAll();renderResumeBox();renderPlanner();renderToday();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&wakeLock)toggleWakeLock()});
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
