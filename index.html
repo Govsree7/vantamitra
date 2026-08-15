@@ -353,6 +353,11 @@ function renderLeftovers(){
 .stat[onclick*="openAllRecipes"]:active{transform:scale(.97)}
 .stat[onclick*="openAllRecipes"] span:after{content:"  ›";font-weight:800}
 </style>
+
+<style>
+#searchResults .card{touch-action:manipulation}
+#searchResults .card:active{transform:scale(.985)}
+</style>
 </head>
 <body>
 <div class="app">
@@ -684,12 +689,32 @@ function isFav(id){return getFav().includes(id)}function toggleFav(id,e){if(e)e.
 function filtered(){let list=(selected.length&&currentMatches.length)?currentMatches:recipes.map(r=>{const q=rank(r);return{...r,...q}});if(diet!=='all')list=list.filter(r=>r.diet===diet);if(meal!=='all')list=list.filter(r=>r.meal.includes(meal));if(category!=='all')list=list.filter(r=>r.category===category);const q=recipeSearch.value.trim().toLowerCase();if(q)list=list.filter(r=>r.searchText.includes(q)||r.en.name.toLowerCase().includes(q)||r.te.name.includes(q));return list}
 function renderResults(){let list=filtered(),intent=selected.length||recipeSearch.value.trim()||diet!=='all'||meal!=='all'||category!=='all';if(!intent){results.innerHTML=`<div class="empty">${lang==='te'?'పదార్థాలు జోడించండి లేదా వంటకం వెతకండి.':'Add ingredients or search for a recipe.'}</div>`;count.textContent='';return}if(!list.length){results.innerHTML=`<div class="empty">${lang==='te'?'సరిపడే వంటకం దొరకలేదు.':'No matching recipe found.'}</div>`;count.textContent='0';return}list=list.slice(0,50);count.textContent=`${list.length} / ${recipes.length}`;results.innerHTML=list.map(r=>recipeCard(r)).join('')}
 function recipeCard(r){const t=r[lang],pct=Math.round((r.coverage||0)*100),matchLine=selected.length?`<div class="score">${r.matches} ${lang==='te'?'మ్యాచ్':'match'} • ${pct}%</div>`:'',missing=selected.length&&r.missing?.length?`<div class="missing">${lang==='te'?'ఇంకా కావాల్సినవి: ':'Still needed: '}${r.missing.slice(0,3).map(dIng).join(', ')}</div>`:'';return`<div class="card"><div class="pic"><img loading="lazy" src="${safePhoto(r)}" alt="${t.name}">${r.cookNow?`<span class="now">${lang==='te'?'ఇప్పుడే':'Cook now'}</span>`:''}<button class="heart" onclick="toggleFav(${r.id},event)">${isFav(r.id)?'♥':'♡'}</button></div><div class="body"><h3>${t.name}</h3><div class="meta">⏱ ${r.time} • 👥 ${r.serves}</div>${matchLine}${missing}<div><span class="tag">${r.diet==='veg'?'🥬 Veg':'🍗 Non-Veg'}</span><span class="tag">${r.category}</span></div><button class="view" onclick="openRecipe(${r.id})">${lang==='te'?'వంట విధానం':'View Recipe'}</button></div></div>`}
+
+function searchResultCard(r){
+  const t=r[lang];
+  return `<div class="card" role="button" tabindex="0"
+      onclick="openRecipe(${r.id})"
+      onkeydown="if(event.key==='Enter'||event.key===' '){openRecipe(${r.id})}"
+      style="cursor:pointer">
+    <div class="pic">
+      <img loading="lazy" src="${safePhoto(r)}" alt="${t.name}">
+      <button class="heart" onclick="event.stopPropagation();toggleFav(${r.id},event)">${isFav(r.id)?'♥':'♡'}</button>
+    </div>
+    <div class="body">
+      <h3>${t.name}</h3>
+      <div class="meta">⏱ ${r.time} • 👥 ${r.serves}</div>
+      <div><span class="tag">${r.diet==='veg'?'🥬 Veg':'🍗 Non-Veg'}</span><span class="tag">${r.category}</span></div>
+      <button class="view" onclick="event.stopPropagation();openRecipe(${r.id})">${lang==='te'?'వంటకం తెరవండి':'Open Recipe'}</button>
+    </div>
+  </div>`;
+}
+
 function renderSearchPage(){
  const q=(pageSearch?.value||'').trim().toLowerCase();
  let list=q
    ? recipes.filter(r=>r.searchText.includes(q)||r.en.name.toLowerCase().includes(q)||r.te.name.includes(q))
    : recipes;
- searchResults.innerHTML=list.map(r=>recipeCard(r)).join('');
+ searchResults.innerHTML=list.map(r=>searchResultCard(r)).join('');
  const h=document.getElementById('searchPageTitle');
  if(h)h.textContent=q
    ? (lang==='te'?`🔎 ఫలితాలు (${list.length})`:`🔎 Results (${list.length})`)
