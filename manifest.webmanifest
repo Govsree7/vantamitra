@@ -11,6 +11,6 @@
   "lang": "en-IN",
   "categories": ["food", "lifestyle"],
   "icons": [
-    {"src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+    {"src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
   ]
 }
