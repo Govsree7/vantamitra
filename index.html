@@ -347,6 +347,12 @@ function renderLeftovers(){
 .bottomNav button{border:0;background:transparent;font-size:10px;color:#555;padding:7px 3px}.bottomNav button span{display:block;font-size:19px;margin-bottom:2px}.bottomNav .navActive{color:var(--g);font-weight:700}
 @media(max-width:460px){.quick{grid-template-columns:repeat(2,minmax(0,1fr))}.personalHero{grid-template-columns:1.2fr 1fr}.bigRec{height:172px}.smallRec{height:82px}.detailHero{height:235px}.stepPhoto{height:205px}}
 </style>
+
+<style>
+.stat[onclick*="openAllRecipes"]{transition:transform .12s ease,box-shadow .12s ease}
+.stat[onclick*="openAllRecipes"]:active{transform:scale(.97)}
+.stat[onclick*="openAllRecipes"] span:after{content:"  ›";font-weight:800}
+</style>
 </head>
 <body>
 <div class="app">
@@ -390,7 +396,7 @@ function renderLeftovers(){
 <div class="label" id="catLabel">కేటగిరీలు</div><div class="wrap" id="catButtons"></div>
 </div>
 <input class="search" id="recipeSearch" placeholder="వంటకం వెతకండి..." oninput="renderResults()">
-<div class="stats"><div class="stat"><b>225</b><span id="statRecipes">వంటకాలు</span></div><div class="stat"><b id="favCount">0</b><span id="statFav">ఇష్టమైనవి</span></div><div class="stat"><b id="pantryCount">0</b><span id="statPantry">పదార్థాలు</span></div></div>
+<div class="stats" role="button" tabindex="0" onclick="openAllRecipes()" style="cursor:pointer"><div class="stat"><b>225</b><span id="statRecipes">వంటకాలు</span></div><div class="stat"><b id="favCount">0</b><span id="statFav">ఇష్టమైనవి</span></div><div class="stat"><b id="pantryCount">0</b><span id="statPantry">పదార్థాలు</span></div></div>
 <div class="sectionHead"><h2 id="suggestionTitle">వంటకాల సూచనలు</h2><span class="small" id="count"></span></div><div class="grid" id="results"><div class="empty">పదార్థాలు జోడించండి లేదా వంటకం వెతకండి.</div></div>
 </main>
 
@@ -964,6 +970,25 @@ function showPage(pageId,navId){document.querySelectorAll('.pagePanel').forEach(
 renderAll();renderResumeBox();renderPlanner();renderPantry();renderToday();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&wakeLock)toggleWakeLock()});
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+
+/* V26 hotfix: tap the 225 Recipes stat to browse every recipe */
+function openAllRecipes(){
+  try{
+    showPage('searchPage','searchNav');
+    const inp=document.getElementById('searchInput') || document.querySelector('#searchPage input[type="search"],#searchPage input');
+    if(inp){ inp.value=''; inp.dispatchEvent(new Event('input',{bubbles:true})); }
+    if(typeof renderSearch==='function') renderSearch();
+    else if(typeof renderAll==='function') renderAll();
+    setTimeout(()=>{
+      const p=document.getElementById('searchPage');
+      if(p) p.scrollTo({top:0,behavior:'smooth'});
+      window.scrollTo({top:0,behavior:'smooth'});
+    },50);
+  }catch(e){
+    console.error(e);
+  }
+}
+
 </script>
 </body>
 </html>
