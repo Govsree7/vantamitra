@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#218c35"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="VantaMitra"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<title>VantaMitra – What Can I Cook?</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial, sans-serif;background:#fff9ef;color:#26321f}
+  .app{max-width:480px;margin:auto;min-height:100vh;background:#fff}
+  header{padding:22px 20px 18px;background:linear-gradient(135deg,#fff4d9,#eff8e8)}
+  .brand{font-size:30px;font-weight:800;color:#218c35}.brand span{color:#f47a20}
+  .sub{margin-top:5px;color:#6c5a48}
+  .lang{margin-top:12px;display:inline-flex;border:1px solid #ddd;border-radius:20px;overflow:hidden}
+  .lang button{border:0;background:white;padding:7px 14px}.lang .active{background:#218c35;color:white}
+  main{padding:18px}
+  h1{font-size:25px;margin:5px 0 4px}.te{color:#777;margin:0 0 18px}
+  .inputbox{display:flex;gap:8px;border:2px solid #d9ead0;border-radius:18px;padding:10px;background:white}
+  input{border:0;outline:0;flex:1;font-size:16px;padding:7px}
+  .add{border:0;border-radius:14px;background:#218c35;color:white;padding:0 15px;font-size:20px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0}
+  .chip{background:#eef8e8;border:1px solid #cce4c3;border-radius:18px;padding:7px 11px}
+  .chip button{border:0;background:none;color:#777;margin-left:5px}
+  .find{width:100%;border:0;border-radius:16px;background:#218c35;color:white;font-size:18px;font-weight:700;padding:14px;margin:5px 0 20px}
+  .result-title{font-size:20px;margin-bottom:10px}
+  .card{border:1px solid #eee;border-radius:18px;padding:13px;margin:10px 0;background:#fff;box-shadow:0 3px 12px #0000000d}
+  .card h3{margin:0 0 7px}.meta{font-size:13px;color:#777}.why{font-size:13px;color:#527148;margin:8px 0}
+  .cook{border:0;background:#f47a20;color:white;border-radius:12px;padding:9px 13px;font-weight:700}
+  .empty{color:#777;text-align:center;padding:25px}
+  .modal{display:none;position:fixed;inset:0;background:#0008;align-items:flex-end}
+  .sheet{background:white;width:100%;max-width:480px;margin:auto;border-radius:24px 24px 0 0;padding:22px;max-height:85vh;overflow:auto}
+  .close{float:right;border:0;background:#eee;border-radius:50%;width:34px;height:34px}
+  .sheet li{margin:10px 0}
+  footer{position:sticky;bottom:0;background:white;border-top:1px solid #eee;padding:12px;text-align:center;color:#777;font-size:13px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">Vanta<span>Mitra</span></div>
+  <div class="sub">వంట మిత్ర • Your Cooking Friend</div>
+  <div class="lang"><button class="active">తెలుగు</button><button>English</button></div>
+</header>
+
+<main>
+  <h1>What can I cook today?</h1>
+  <p class="te">మీ దగ్గర ఉన్న పదార్థాలు ఇవ్వండి</p>
+
+  <div class="inputbox">
+    <input id="ingredientInput" placeholder="e.g. tomato, rice, egg">
+    <button class="add" onclick="addIngredient()">+</button>
+  </div>
+
+  <div id="chips" class="chips"></div>
+
+  <button class="find" onclick="findRecipes()">🍳 Find My Recipes</button>
+
+  <div class="result-title">Recipe Suggestions</div>
+  <div id="results" class="empty">Add a few ingredients and tap “Find My Recipes”.</div>
+</main>
+
+<footer>VantaMitra • Simple cooking guidance for every home</footer>
+</div>
+
+<div id="modal" class="modal" onclick="if(event.target.id==='modal')closeRecipe()">
+  <div class="sheet">
+    <button class="close" onclick="closeRecipe()">✕</button>
+    <h2 id="mTitle"></h2>
+    <div id="mMeta" class="meta"></div>
+    <h3>Ingredients</h3>
+    <ul id="mIngredients"></ul>
+    <h3>Steps</h3>
+    <ol id="mSteps"></ol>
+  </div>
+</div>
+
+<script>
+const recipes = [
+ {name:"Tomato Rice",time:"20 min",need:["rice","tomato","onion"],ingredients:["1 cup cooked rice","2 tomatoes","1 onion","1 tsp oil","Salt to taste"],steps:["Heat oil and sauté onion.","Add chopped tomatoes and cook until soft.","Add salt and spices.","Mix in cooked rice and cook for 3–4 minutes."]},
+ {name:"Egg Tomato Curry",time:"25 min",need:["egg","tomato","onion"],ingredients:["3 eggs","2 tomatoes","1 onion","1 tbsp oil","Salt and chilli powder"],steps:["Boil the eggs and remove shells.","Sauté onion in oil.","Add tomatoes and spices; cook until soft.","Add eggs and simmer for 5 minutes."]},
+ {name:"Potato Tomato Curry",time:"25 min",need:["potato","tomato","onion"],ingredients:["3 potatoes","2 tomatoes","1 onion","1 tbsp oil","Salt and chilli powder"],steps:["Boil or cube the potatoes.","Sauté onion and add tomatoes.","Add spices and cook until tomatoes soften.","Add potatoes and simmer for 8 minutes."]},
+ {name:"Egg Fried Rice",time:"20 min",need:["rice","egg","onion"],ingredients:["2 cups cooked rice","2 eggs","1 onion","1 tbsp oil","Salt"],steps:["Scramble eggs in hot oil.","Add onion and sauté.","Add rice and salt.","Stir-fry on high heat for 3–4 minutes."]},
+ {name:"Tomato Onion Chutney",time:"15 min",need:["tomato","onion"],ingredients:["2 tomatoes","1 onion","2 chillies","1 tsp oil","Salt"],steps:["Sauté onion, tomatoes and chillies.","Cook until soft.","Cool slightly and grind.","Add seasoning if desired."]}
+];
+
+let ingredients=[];
+
+function addIngredient(){
+  const input=document.getElementById("ingredientInput");
+  const value=input.value.trim().toLowerCase();
+  if(!value) return;
+  value.split(",").map(x=>x.trim()).filter(Boolean).forEach(v=>{
+    if(!ingredients.includes(v)) ingredients.push(v);
+  });
+  input.value="";
+  renderChips();
+}
+
+document.getElementById("ingredientInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter") addIngredient();
+});
+
+function renderChips(){
+  document.getElementById("chips").innerHTML=ingredients.map((x,i)=>
+    `<span class="chip">${x}<button onclick="removeIngredient(${i})">✕</button></span>`).join("");
+}
+function removeIngredient(i){ingredients.splice(i,1);renderChips();}
+
+function findRecipes(){
+  const box=document.getElementById("results");
+  if(!ingredients.length){box.className="empty";box.textContent="Please add at least one ingredient.";return;}
+  const matches=recipes.map(r=>{
+    const score=r.need.filter(n=>ingredients.some(i=>i.includes(n)||n.includes(i))).length/r.need.length;
+    return {...r,score};
+  }).filter(r=>r.score>=0.5).sort((a,b)=>b.score-a.score);
+
+  if(!matches.length){box.className="empty";box.textContent="No close match yet. Try adding tomato, onion, rice, potato or egg.";return;}
+  box.className="";
+  box.innerHTML=matches.map((r,idx)=>`
+    <div class="card">
+      <h3>${r.name}</h3>
+      <div class="meta">⏱ ${r.time} • ${Math.round(r.score*100)}% ingredient match</div>
+      <div class="why">Uses: ${r.need.join(", ")}</div>
+      <button class="cook" onclick="openRecipe(${recipes.indexOf(r)})">Start Cooking →</button>
+    </div>`).join("");
+}
+
+function openRecipe(i){
+  const r=recipes[i];
+  document.getElementById("mTitle").textContent=r.name;
+  document.getElementById("mMeta").textContent="⏱ "+r.time;
+  document.getElementById("mIngredients").innerHTML=r.ingredients.map(x=>`<li>${x}</li>`).join("");
+  document.getElementById("mSteps").innerHTML=r.steps.map(x=>`<li>${x}</li>`).join("");
+  document.getElementById("modal").style.display="flex";
+}
+function closeRecipe(){document.getElementById("modal").style.display="none";}
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "VantaMitra – వంట మిత్ర",
+  "short_name": "VantaMitra",
+  "description": "Your friendly cooking guide: find recipes from the ingredients you already have.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff9ef",
+  "theme_color": "#218c35",
+  "lang": "en-IN",
+  "categories": ["food", "lifestyle"],
+  "icons": [
+    {"src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
