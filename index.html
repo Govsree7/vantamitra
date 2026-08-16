@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#176f2b">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg">
-<title>VantaMitra V29</title>
+<title>VantaMitra V30</title>
 <style>
 *{box-sizing:border-box}
 :root{--g:#176f2b;--g2:#2da44e;--o:#f47a20;--bg:#f5f7f3;--soft:#edf7ea;--line:#e3e7df;--text:#1f2b20;--muted:#70776f;--warn:#fff7e8;--shadow:0 10px 28px #00000012}
@@ -285,6 +285,14 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 .v29BackTop button{pointer-events:auto;border:0;background:#176f2be8;color:#fff;border-radius:999px;padding:9px 12px;font-size:11px;font-weight:700;box-shadow:0 5px 16px #0002}
 @media(max-width:420px){.v29SearchTools{top:91px}.v29Clear{padding:10px}.recipeInfoGrid{grid-template-columns:repeat(2,1fr)}}
 
+
+/* V30 — Kitchen Prep Checklist */
+.prepBox{background:#f6fbf3;border:1px solid #dcebd5;border-radius:15px;padding:11px;margin:10px 0}
+.prepHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.prepHead b{font-size:13px}.prepHead span{font-size:11px;color:var(--muted)}
+.prepTrack{height:8px;background:#e6ece2;border-radius:999px;overflow:hidden}.prepFill{height:100%;width:0;background:var(--g);border-radius:999px;transition:width .2s ease}
+.prepActions{display:flex;gap:7px;margin-top:8px}.prepActions button{border:1px solid #d8e2d3;background:#fff;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:700;color:var(--g)}
+.ingredientList li{cursor:pointer}.ingredientList li.prepDone span{text-decoration:line-through;opacity:.55}
+
 </style>
 
 <style>
@@ -301,7 +309,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <body>
 <div class="app">
 <header>
-<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V29</span></div>
+<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V30</span></div>
 <div class="sub">వంట మిత్ర • Your Cooking Friend</div>
 <div class="lang"><button id="teBtn" class="active" onclick="setLang('te')">తెలుగు</button><button id="enBtn" onclick="setLang('en')">English</button></div>
 </header>
@@ -408,7 +416,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <div class="planGrocery"><h3 id="planGroceryTitle">🛒 ప్లాన్‌కు కావాల్సిన పదార్థాలు</h3><div id="planGroceryList"></div><button class="find" onclick="copyPlanToShopping()" id="copyPlanBtn">Shopping List కు జోడించు</button></div>
 </main>
 <main id="shoppingPage" class="pagePanel"><div class="pageTitle"><h2 id="shopPageTitle">🛒 షాపింగ్ లిస్ట్</h2><button class="pill" onclick="clearShopping()" id="clearShopBtn">Clear</button></div><div id="shoppingList"></div></main>
-<footer>VantaMitra V29 • Search + Recipe Pro</footer>
+<footer>VantaMitra V30 • Kitchen Prep</footer>
 </div>
 
 <nav class="bottomNav">
@@ -849,10 +857,18 @@ function recipeDescription(r){
  }
  return `${t.name} is a practical ${r.category.toLowerCase()} recipe for home cooking. Prepare the ingredients first, then follow each step in order.`;
 }
-function ingredientQualityLine(x){
- const s=String(x).trim();
- return `<li><input type="checkbox"><span>${s}</span></li>`;
+function getPrepState(id){try{return JSON.parse(localStorage.getItem('vm30prep_'+id)||'[]')}catch(e){return[]}}
+function savePrepState(id,a){localStorage.setItem('vm30prep_'+id,JSON.stringify(a))}
+function ingredientQualityLine(x,i){
+ const s=String(x).trim(),checked=getPrepState(currentRecipeId).includes(i);
+ return `<li class="${checked?'prepDone':''}" onclick="togglePrepIngredient(${i},event)"><input type="checkbox" ${checked?'checked':''} aria-label="${s.replace(/"/g,'&quot;')}"><span>${s}</span></li>`;
 }
+function togglePrepIngredient(i,e){
+ if(e)e.stopPropagation();let a=getPrepState(currentRecipeId);a=a.includes(i)?a.filter(x=>x!==i):[...a,i];savePrepState(currentRecipeId,a);renderDetail();
+}
+function clearPrepChecklist(){savePrepState(currentRecipeId,[]);renderDetail()}
+function checkAllPrep(){const r=recipes.find(x=>x.id===currentRecipeId);if(!r)return;savePrepState(currentRecipeId,r[lang].ingredients.map((_,i)=>i));renderDetail()}
+function prepSummary(total){const done=getPrepState(currentRecipeId).filter(i=>i<total).length,pct=total?Math.round(done/total*100):0;return `<div class="prepBox"><div class="prepHead"><b>${lang==='te'?'🥕 వంటకు సిద్ధం':'🥕 Kitchen Prep'}</b><span>${done} / ${total} ${lang==='te'?'సిద్ధం':'ready'}</span></div><div class="prepTrack"><div class="prepFill" style="width:${pct}%"></div></div><div class="prepActions"><button onclick="checkAllPrep()">${lang==='te'?'✓ అన్నీ సిద్ధం':'✓ Mark all ready'}</button><button onclick="clearPrepChecklist()">${lang==='te'?'↺ రీసెట్':'↺ Reset'}</button></div></div>`}
 function stepTip(i,total){
  if(lang==='te'){
    if(i===0)return 'మొదటి స్టెప్ ముందు అవసరమైన పదార్థాలు దగ్గర పెట్టుకోండి.';
@@ -868,7 +884,7 @@ function openRecipe(id){const r=recipes.find(x=>x.id===Number(id));if(!r){consol
 function renderDetail(){
  const r=recipes.find(x=>x.id===currentRecipeId),t=r[lang],base=parseInt(r.serves)||1,ratio=currentServe/base,q=rank(r),ready=q.missing.length===0||(q.cookNow&&q.missing.length<=1);
  const readyHtml=smartSelectedIngredients().length?`<div class="${ready?'readyBox':'missingBox'}">${ready?(lang==='te'?'✅ ఈ వంటకానికి అవసరమైన ముఖ్యమైన పదార్థాలు మీ దగ్గర ఉన్నాయి.':'✅ You have most of the key ingredients for this recipe.'):(lang==='te'?'🛒 ఇంకా కావాల్సినవి: ':'🛒 Still needed: ')+q.missing.slice(0,6).map(dIng).join(', ')}</div>`:'';
- const ingredientHtml=t.ingredients.map(x=>ingredientQualityLine(scaleText(x,ratio))).join('');
+ const ingredientHtml=t.ingredients.map((x,i)=>ingredientQualityLine(scaleText(x,ratio),i)).join('');
  const fullSteps=t.steps.map((s,i)=>`<div class="stepQuality"><div class="stepQualityNum">${i+1}</div><div class="stepQualityText">${s}<small>💡 ${stepTip(i,t.steps.length)}</small></div></div>`).join('');
  recipeDetail.innerHTML=`<div class="detailTop"><div class="detailHero"><img src="${safePhoto(r)}" alt="${t.name}"><div class="detailShade"></div><div class="detailTitleOnImage"><h2>${t.name}</h2></div></div><button class="close" onclick="closeModal()">×</button></div>
  <div class="detailBody">
@@ -882,7 +898,7 @@ function renderDetail(){
  ${readyHtml}
  <div class="serve"><span>${lang==='te'?'సర్వింగ్స్ మార్చండి':'Adjust servings'}</span><div class="stepper"><button onclick="changeServe(-1)">−</button><b>${currentServe}</b><button onclick="changeServe(1)">+</button></div></div>
  <div class="actions"><button onclick="toggleFav(${r.id});renderDetail()">${isFav(r.id)?'♥':'♡'} ${lang==='te'?'ఫేవరెట్':'Favorite'}</button><button onclick="shareRecipe(${r.id})">↗ ${lang==='te'?'షేర్':'Share'}</button><button onclick="addMissingToShop(${r.id})">🛒 ${lang==='te'?'షాపింగ్':'Shopping'}</button><button onclick="quickAddCurrentRecipeToPlan()">📅 ${lang==='te'?'ప్లాన్':'Plan'}</button></div><div class="sectionCard"><h3>${lang==='te'?'📝 నా నోట్':'📝 My Note'}</h3><textarea class="noteBox" id="note_${r.id}" placeholder="${lang==='te'?'ఈ వంటకం గురించి మీ నోట్...':'Your note about this recipe...'}">${getRecipeNote(r.id)}</textarea><button class="noteSave" onclick="saveRecipeNote(${r.id})">${lang==='te'?'నోట్ సేవ్':'Save Note'}</button></div>
- <div class="sectionCard"><h3>${lang==='te'?'🥕 కావాల్సిన పదార్థాలు':'🥕 Ingredients'}</h3><div class="meta">${lang==='te'?'సర్వింగ్స్ మార్చితే పరిమాణాలు ఆటోమేటిక్‌గా మారుతాయి.':'Quantities adjust automatically when servings change.'}</div><ul class="ingredientList">${ingredientHtml}</ul></div>
+ <div class="sectionCard"><h3>${lang==='te'?'🥕 కావాల్సిన పదార్థాలు':'🥕 Ingredients'}</h3><div class="meta">${lang==='te'?'సర్వింగ్స్ మార్చితే పరిమాణాలు ఆటోమేటిక్‌గా మారుతాయి. పదార్థం సిద్ధమైతే టిక్ చేయండి.':'Quantities adjust automatically when servings change. Tick each ingredient as you get it ready.'}</div>${prepSummary(t.ingredients.length)}<ul class="ingredientList">${ingredientHtml}</ul></div>
  <div class="sectionCard"><h3>${lang==='te'?'👨‍🍳 పూర్తి వంట విధానం':'👨‍🍳 Full Cooking Method'}</h3><div class="meta">${t.steps.length} ${lang==='te'?'స్పష్టమైన స్టెప్స్':'clear steps'} • ${r.time}</div>${fullSteps}<button class="startCook" onclick="startCookingMode()">${lang==='te'?'▶ కుకింగ్ మోడ్ ప్రారంభించండి':'▶ Start Cooking Mode'}</button></div>
  <div class="v29BackTop"><button onclick="document.getElementById('recipeSheet')?.scrollTo({top:0,behavior:'smooth'})">↑ ${lang==='te'?'పైకి':'Top'}</button></div>
  </div>`;
@@ -1056,6 +1072,7 @@ function openAllRecipes(){
 }
 
 
+/* V30 Kitchen Prep — additive upgrade; V29 guards preserved */
 /* V29 mobile/accessibility guards */
 document.addEventListener('keydown',e=>{
  if(e.key==='Escape' && modal && modal.style.display==='flex') closeModal();
