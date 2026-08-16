@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#176f2b">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg">
-<title>VantaMitra V34</title>
+<title>VantaMitra 1.0</title>
 <style>
 *{box-sizing:border-box}
 :root{--g:#176f2b;--g2:#2da44e;--o:#f47a20;--bg:#f5f7f3;--soft:#edf7ea;--line:#e3e7df;--text:#1f2b20;--muted:#70776f;--warn:#fff7e8;--shadow:0 10px 28px #00000012}
@@ -334,6 +334,9 @@ button:disabled{cursor:not-allowed}
  .timerRow button,.smartTimerActions button,.cookNav button{min-height:44px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* V35 / VantaMitra 1.0 — release identity only */
+.releaseBadge{display:inline-flex;align-items:center;gap:5px;background:#edf7ee;color:var(--g);border:1px solid #cfe2d2;border-radius:999px;padding:5px 9px;font-size:9px;font-weight:800;letter-spacing:.2px}
 </style>
 
 <style>
@@ -346,11 +349,19 @@ button:disabled{cursor:not-allowed}
 #searchResults .card{touch-action:manipulation}
 #searchResults .card:active{transform:scale(.985)}
 </style>
+
+<meta name="application-name" content="VantaMitra">
+<meta name="description" content="VantaMitra 1.0 — Telugu and English kitchen companion with recipes, pantry, meal planning, shopping, cooking mode, prep checklist, large text and smart timers.">
+<meta name="theme-color" content="#1f6f43">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VantaMitra">
+<meta name="format-detection" content="telephone=no">
 </head>
 <body>
 <div class="app">
 <header>
-<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V34</span></div>
+<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">1.0</span><span class="releaseBadge">✓ Stable Release</span></div>
 <div class="sub">వంట మిత్ర • Your Cooking Friend</div>
 <div class="lang"><button id="teBtn" class="active" onclick="setLang('te')">తెలుగు</button><button id="enBtn" onclick="setLang('en')">English</button></div>
 </header>
@@ -457,7 +468,7 @@ button:disabled{cursor:not-allowed}
 <div class="planGrocery"><h3 id="planGroceryTitle">🛒 ప్లాన్‌కు కావాల్సిన పదార్థాలు</h3><div id="planGroceryList"></div><button class="find" onclick="copyPlanToShopping()" id="copyPlanBtn">Shopping List కు జోడించు</button></div>
 </main>
 <main id="shoppingPage" class="pagePanel"><div class="pageTitle"><h2 id="shopPageTitle">🛒 షాపింగ్ లిస్ట్</h2><button class="pill" onclick="clearShopping()" id="clearShopBtn">Clear</button></div><div id="shoppingList"></div></main>
-<footer>VantaMitra V34 • Final Polish</footer>
+<footer>VantaMitra 1.0 • Final Release</footer>
 </div>
 
 <nav class="bottomNav">
@@ -1257,6 +1268,15 @@ document.addEventListener('visibilitychange',function(){
 });
 window.addEventListener('pageshow',function(){
  try{if(typeof applyCookTextSize==='function')applyCookTextSize()}catch(e){}
+});
+
+/* V35 — VantaMitra 1.0 stable release */
+window.addEventListener('beforeunload',function(){
+  try{
+    var t=document.getElementById('cookTimer');
+    if(t && t._t) clearInterval(t._t);
+    if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }catch(e){}
 });
 </script>
 </body>
