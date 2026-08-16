@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#176f2b">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg">
-<title>VantaMitra V31</title>
+<title>VantaMitra V32</title>
 <style>
 *{box-sizing:border-box}
 :root{--g:#176f2b;--g2:#2da44e;--o:#f47a20;--bg:#f5f7f3;--soft:#edf7ea;--line:#e3e7df;--text:#1f2b20;--muted:#70776f;--warn:#fff7e8;--shadow:0 10px 28px #00000012}
@@ -302,6 +302,15 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 .cookIng:last-child{border-bottom:0}
 .cookIng input{width:20px;height:20px;flex:0 0 auto}
 .cookIng.done span{text-decoration:line-through;opacity:.55}
+
+/* V32 — Cooking Mode readability controls */
+.cookTextTools{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0 2px}
+.cookTextTools button{border:1px solid #d6dfd2;background:#fff;color:var(--g);border-radius:999px;min-width:48px;padding:8px 12px;font-size:13px;font-weight:800}
+.cookTextTools span{font-size:10px;color:var(--muted);min-width:62px;text-align:center}
+#cookStepText.vmText1{font-size:18px}
+#cookStepText.vmText2{font-size:22px}
+#cookStepText.vmText3{font-size:27px}
+#cookStepText.vmText4{font-size:32px}
 </style>
 
 <style>
@@ -318,7 +327,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <body>
 <div class="app">
 <header>
-<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V31</span></div>
+<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V32</span></div>
 <div class="sub">వంట మిత్ర • Your Cooking Friend</div>
 <div class="lang"><button id="teBtn" class="active" onclick="setLang('te')">తెలుగు</button><button id="enBtn" onclick="setLang('en')">English</button></div>
 </header>
@@ -425,7 +434,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <div class="planGrocery"><h3 id="planGroceryTitle">🛒 ప్లాన్‌కు కావాల్సిన పదార్థాలు</h3><div id="planGroceryList"></div><button class="find" onclick="copyPlanToShopping()" id="copyPlanBtn">Shopping List కు జోడించు</button></div>
 </main>
 <main id="shoppingPage" class="pagePanel"><div class="pageTitle"><h2 id="shopPageTitle">🛒 షాపింగ్ లిస్ట్</h2><button class="pill" onclick="clearShopping()" id="clearShopBtn">Clear</button></div><div id="shoppingList"></div></main>
-<footer>VantaMitra V31 • Cooking Ingredients</footer>
+<footer>VantaMitra V32 • Large Text Cooking</footer>
 </div>
 
 <nav class="bottomNav">
@@ -449,6 +458,11 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <div class="cookContent">
 <div class="stepPhoto"><img id="cookImage" src="" alt=""><span class="stepPhotoBadge" id="stepPhotoBadge">Step 1</span><button class="keepAwake" id="wakeBtn" onclick="toggleWakeLock()">☀ Keep awake</button></div>
 <div class="cookRecipeName" id="cookRecipeName"></div><div class="stepCounter" id="cookStepCounter"></div><div class="progress"><div id="cookProgress"></div></div>
+<div class="cookTextTools">
+<button type="button" onclick="changeCookTextSize(-1)" aria-label="Smaller cooking text">A−</button>
+<span id="cookTextSizeLabel">Text 2/4</span>
+<button type="button" onclick="changeCookTextSize(1)" aria-label="Larger cooking text">A+</button>
+</div>
 <div class="stepBig" id="cookStepText"></div>
 <button type="button" class="cookIngredientsBtn" id="cookIngredientsBtn" onclick="toggleCookIngredients()">🥕 View Ingredients</button>
 <div class="cookIngredientsPanel" id="cookIngredientsPanel"></div>
@@ -928,7 +942,7 @@ function openCookingUI(reset){const r=recipes.find(x=>x.id===currentRecipeId);if
 const vm31Box=document.getElementById('cookIngredientsPanel'),vm31Btn=document.getElementById('cookIngredientsBtn');
 if(vm31Box)vm31Box.classList.remove('open');
 if(vm31Btn)vm31Btn.textContent=lang==='te'?'🥕 పదార్థాలు చూడండి':'🥕 View Ingredients';
-if(reset)cookStep=0;modal.style.display='none';modal.setAttribute('aria-hidden','true');document.body.style.overflow='';cookFullscreen.classList.add('open');cookImage.src=safePhoto(r);cookImage.alt=r[lang].name;cookRecipeName.textContent=r[lang].name;doneBox.style.display='none';cookStepText.style.display='block';cookStepCounter.style.display='block';cookProgress.parentElement.style.display='block';cookPrevBtn.style.display='block';cookNextBtn.style.display='block';document.querySelector('.timerRow').style.display='flex';document.querySelector('.customTimer').style.display='flex';cookTip.style.display='block';document.querySelector('.voiceRow').style.display='grid';updateCookMode();saveCookingProgress()}
+if(reset)cookStep=0;modal.style.display='none';modal.setAttribute('aria-hidden','true');document.body.style.overflow='';cookFullscreen.classList.add('open');cookImage.src=safePhoto(r);cookImage.alt=r[lang].name;cookRecipeName.textContent=r[lang].name;doneBox.style.display='none';cookStepText.style.display='block';cookStepCounter.style.display='block';cookProgress.parentElement.style.display='block';cookPrevBtn.style.display='block';cookNextBtn.style.display='block';document.querySelector('.timerRow').style.display='flex';document.querySelector('.customTimer').style.display='flex';cookTip.style.display='block';document.querySelector('.voiceRow').style.display='grid';updateCookMode();applyCookTextSize();saveCookingProgress()}
 function updateCookMode(){const r=recipes.find(x=>x.id===currentRecipeId);if(!r)return;const steps=r[lang].steps;cookStepCounter.textContent=(lang==='te'?'స్టెప్ ':'Step ')+(cookStep+1)+' / '+steps.length;stepPhotoBadge.textContent=(lang==='te'?'స్టెప్ ':'Step ')+(cookStep+1);cookStepText.textContent=steps[cookStep];cookProgress.style.width=((cookStep+1)/steps.length*100)+'%';cookPrevBtn.disabled=cookStep===0;cookPrevBtn.style.opacity=cookStep===0?.45:1;cookNextBtn.textContent=cookStep===steps.length-1?(lang==='te'?'పూర్తి ✓':'Finish ✓'):(lang==='te'?'తర్వాత →':'Next →');saveCookingProgress()}
 function cookPrev(){if(cookStep>0){cookStep--;stopSpeaking();updateCookMode()}}
 function cookNext(){const r=recipes.find(x=>x.id===currentRecipeId),steps=r[lang].steps;stopSpeaking();if(cookStep<steps.length-1){cookStep++;updateCookMode()}else{showCookDone()}}
@@ -1143,6 +1157,26 @@ function toggleCookIngredients(){
     box.classList.add('open');
     btn.textContent=lang==='te'?'🥕 పదార్థాలు దాచండి':'🥕 Hide Ingredients';
   }
+}
+
+/* V32 — persistent Cooking Mode text size */
+function getCookTextSize(){
+  var n=parseInt(localStorage.getItem('vm32cookText')||'2',10);
+  return Math.max(1,Math.min(4,n||2));
+}
+function applyCookTextSize(){
+  var el=document.getElementById('cookStepText');
+  var label=document.getElementById('cookTextSizeLabel');
+  if(!el)return;
+  var n=getCookTextSize();
+  el.classList.remove('vmText1','vmText2','vmText3','vmText4');
+  el.classList.add('vmText'+n);
+  if(label) label.textContent=(lang==='te'?'అక్షరాలు ':'Text ')+n+'/4';
+}
+function changeCookTextSize(delta){
+  var n=Math.max(1,Math.min(4,getCookTextSize()+delta));
+  localStorage.setItem('vm32cookText',String(n));
+  applyCookTextSize();
 }
 </script>
 </body>
