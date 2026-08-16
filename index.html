@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#176f2b">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg">
-<title>VantaMitra V32</title>
+<title>VantaMitra V33</title>
 <style>
 *{box-sizing:border-box}
 :root{--g:#176f2b;--g2:#2da44e;--o:#f47a20;--bg:#f5f7f3;--soft:#edf7ea;--line:#e3e7df;--text:#1f2b20;--muted:#70776f;--warn:#fff7e8;--shadow:0 10px 28px #00000012}
@@ -311,6 +311,14 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 #cookStepText.vmText2{font-size:22px}
 #cookStepText.vmText3{font-size:27px}
 #cookStepText.vmText4{font-size:32px}
+
+/* V33 — Smart Cooking Timer */
+.smartTimerActions{display:none;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0 10px}
+.smartTimerActions button{border:1px solid #e1d7c6;background:#fff;border-radius:12px;padding:9px;font-size:11px;font-weight:800}
+.smartTimerActions .danger{color:#a64232}
+.timerbar.running{display:block;background:#fff7e8;border-color:#f1ddbb}
+.timerbar.paused{display:block;background:#f2f4f1;border-color:#dfe4dc}
+.timerbar.done{display:block;background:#edf8ea;border-color:#cfe6c8}
 </style>
 
 <style>
@@ -327,7 +335,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <body>
 <div class="app">
 <header>
-<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V32</span></div>
+<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V33</span></div>
 <div class="sub">వంట మిత్ర • Your Cooking Friend</div>
 <div class="lang"><button id="teBtn" class="active" onclick="setLang('te')">తెలుగు</button><button id="enBtn" onclick="setLang('en')">English</button></div>
 </header>
@@ -434,7 +442,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <div class="planGrocery"><h3 id="planGroceryTitle">🛒 ప్లాన్‌కు కావాల్సిన పదార్థాలు</h3><div id="planGroceryList"></div><button class="find" onclick="copyPlanToShopping()" id="copyPlanBtn">Shopping List కు జోడించు</button></div>
 </main>
 <main id="shoppingPage" class="pagePanel"><div class="pageTitle"><h2 id="shopPageTitle">🛒 షాపింగ్ లిస్ట్</h2><button class="pill" onclick="clearShopping()" id="clearShopBtn">Clear</button></div><div id="shoppingList"></div></main>
-<footer>VantaMitra V32 • Large Text Cooking</footer>
+<footer>VantaMitra V33 • Smart Timer</footer>
 </div>
 
 <nav class="bottomNav">
@@ -472,9 +480,14 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <div class="commandStatus" id="commandStatus"></div>
 <div class="commandHelp" id="commandHelp" style="display:none"><b id="commandHelpTitle">Voice commands</b><span id="commandHelpText">Tap “Say Command”, then say: “Next step”, “Previous step”, “Repeat”, “Start 5 minute timer”, “Stop timer”, “Read step”, or “Finish cooking”.</span></div>
 
-<div class="timerRow"><button onclick="startCookTimer(3)">⏱ 3 min</button><button onclick="startCookTimer(5)">⏱ 5 min</button><button onclick="startCookTimer(10)">⏱ 10 min</button><button onclick="startCookTimer(15)">⏱ 15 min</button></div>
+<div class="timerRow"><button onclick="startCookTimer(1)">⏱ 1 min</button><button onclick="startCookTimer(3)">⏱ 3 min</button><button onclick="startCookTimer(5)">⏱ 5 min</button><button onclick="startCookTimer(10)">⏱ 10 min</button></div>
 <div class="customTimer"><input id="customTimerInput" type="number" min="1" max="180" placeholder="Minutes"><button onclick="startCustomTimer()" id="customTimerBtn">Start timer</button></div>
-<div class="timerbar" id="cookTimer"></div><div class="cookNav"><button class="prev" onclick="cookPrev()" id="cookPrevBtn">← Previous</button><button class="next" onclick="cookNext()" id="cookNextBtn">Next →</button></div>
+<div class="timerbar" id="cookTimer"></div>
+<div class="smartTimerActions" id="smartTimerActions">
+<button type="button" id="pauseTimerBtn" onclick="toggleCookTimerPause()">⏸ Pause</button>
+<button type="button" class="danger" id="cancelTimerBtn" onclick="cancelCookTimer()">✕ Cancel</button>
+</div>
+<div class="cookNav"><button class="prev" onclick="cookPrev()" id="cookPrevBtn">← Previous</button><button class="next" onclick="cookNext()" id="cookNextBtn">Next →</button></div>
 <div class="doneBox" id="doneBox"><div style="font-size:54px">🎉</div><h2 id="doneTitle">వంట పూర్తైంది!</h2><p id="doneText">బాగా చేసారు. ఇప్పుడు సర్వ్ చేయండి.</p><div class="rateRow"><button onclick="rateDish(1)">😐</button><button onclick="rateDish(2)">🙂</button><button onclick="rateDish(3)">😍</button></div><button onclick="finishCooking()" id="doneBtn">Done</button></div>
 </div></div>
 
@@ -946,11 +959,55 @@ if(reset)cookStep=0;modal.style.display='none';modal.setAttribute('aria-hidden',
 function updateCookMode(){const r=recipes.find(x=>x.id===currentRecipeId);if(!r)return;const steps=r[lang].steps;cookStepCounter.textContent=(lang==='te'?'స్టెప్ ':'Step ')+(cookStep+1)+' / '+steps.length;stepPhotoBadge.textContent=(lang==='te'?'స్టెప్ ':'Step ')+(cookStep+1);cookStepText.textContent=steps[cookStep];cookProgress.style.width=((cookStep+1)/steps.length*100)+'%';cookPrevBtn.disabled=cookStep===0;cookPrevBtn.style.opacity=cookStep===0?.45:1;cookNextBtn.textContent=cookStep===steps.length-1?(lang==='te'?'పూర్తి ✓':'Finish ✓'):(lang==='te'?'తర్వాత →':'Next →');saveCookingProgress()}
 function cookPrev(){if(cookStep>0){cookStep--;stopSpeaking();updateCookMode()}}
 function cookNext(){const r=recipes.find(x=>x.id===currentRecipeId),steps=r[lang].steps;stopSpeaking();if(cookStep<steps.length-1){cookStep++;updateCookMode()}else{showCookDone()}}
-function showCookDone(){cookStepText.style.display='none';cookStepCounter.style.display='none';cookProgress.parentElement.style.display='none';cookPrevBtn.style.display='none';cookNextBtn.style.display='none';document.querySelector('.timerRow').style.display='none';document.querySelector('.customTimer').style.display='none';document.querySelector('.voiceRow').style.display='none';cookTimer.style.display='none';cookTip.style.display='none';doneBox.style.display='block'}
+function showCookDone(){cookStepText.style.display='none';cookStepCounter.style.display='none';cookProgress.parentElement.style.display='none';cookPrevBtn.style.display='none';cookNextBtn.style.display='none';document.querySelector('.timerRow').style.display='none';document.querySelector('.customTimer').style.display='none';document.querySelector('.voiceRow').style.display='none';cookTimer.style.display='none';const sta=document.getElementById('smartTimerActions');if(sta)sta.style.display='none';cookTip.style.display='none';doneBox.style.display='block'}
 function finishCooking(){addCookedRecipe(currentRecipeId);localStorage.removeItem('vm26cooking');renderResumeBox();renderCookbook();closeCookingMode()}
 function rateDish(n){localStorage.setItem('vm26rating_'+currentRecipeId,String(n));alert(lang==='te'?'ధన్యవాదాలు! మీ రేటింగ్ సేవ్ అయ్యింది.':'Thanks! Your rating was saved.')}
-function closeCookingMode(){cookFullscreen.classList.remove('open');clearInterval(cookTimer._t);stopSpeaking();if(handsFreeEnabled){handsFreeEnabled=false;if(handsFreeRecognition){try{handsFreeRecognition.stop()}catch(e){}}}releaseWakeLock();renderResumeBox()}
-function startCookTimer(min){let left=min*60;cookTimer.style.display='block';clearInterval(cookTimer._t);cookTimer._t=setInterval(()=>{const mm=Math.floor(left/60),ss=left%60;cookTimer.textContent=`⏱ ${mm}:${String(ss).padStart(2,'0')}`;left--;if(left<0){clearInterval(cookTimer._t);cookTimer.textContent=lang==='te'?'✅ టైమర్ పూర్తైంది':'✅ Timer done'}},1000)}
+function closeCookingMode(){cookFullscreen.classList.remove('open');clearInterval(cookTimer._t);const sta=document.getElementById('smartTimerActions');if(sta)sta.style.display='none';stopSpeaking();if(handsFreeEnabled){handsFreeEnabled=false;if(handsFreeRecognition){try{handsFreeRecognition.stop()}catch(e){}}}releaseWakeLock();renderResumeBox()}
+function vm33TimerPaint(){
+ const box=document.getElementById('cookTimer'),actions=document.getElementById('smartTimerActions'),pauseBtn=document.getElementById('pauseTimerBtn');
+ if(!box)return;
+ const left=Math.max(0,box._left||0),mm=Math.floor(left/60),ss=left%60;
+ box.textContent=`⏱ ${mm}:${String(ss).padStart(2,'0')}`+(box._paused?(lang==='te'?' • విరామం':' • Paused'):'');
+ box.classList.remove('running','paused','done');
+ box.classList.add(box._paused?'paused':'running');
+ box.style.display='block';
+ if(actions)actions.style.display='grid';
+ if(pauseBtn)pauseBtn.textContent=box._paused?(lang==='te'?'▶ కొనసాగించు':'▶ Resume'):(lang==='te'?'⏸ విరామం':'⏸ Pause');
+}
+function vm33TimerTick(){
+ const box=document.getElementById('cookTimer'); if(!box||box._paused)return;
+ box._left=(box._left||0)-1;
+ if(box._left<0){
+   clearInterval(box._t); box._t=null; box._left=0; box._paused=false;
+   box.textContent=lang==='te'?'✅ టైమర్ పూర్తైంది':'✅ Timer done';
+   box.classList.remove('running','paused'); box.classList.add('done');
+   const actions=document.getElementById('smartTimerActions'); if(actions)actions.style.display='none';
+   try{if(navigator.vibrate)navigator.vibrate([250,120,250,120,400])}catch(e){}
+   try{
+     const AC=window.AudioContext||window.webkitAudioContext;
+     if(AC){const ac=new AC(),o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=880;g.gain.value=.12;o.start();setTimeout(()=>{try{o.stop();ac.close()}catch(e){}},700)}
+   }catch(e){}
+   return;
+ }
+ vm33TimerPaint();
+}
+function startCookTimer(min){
+ const box=document.getElementById('cookTimer'); if(!box)return;
+ clearInterval(box._t);
+ box._left=Math.max(1,Math.round(Number(min)*60)); box._paused=false;
+ vm33TimerPaint();
+ box._t=setInterval(vm33TimerTick,1000);
+}
+function toggleCookTimerPause(){
+ const box=document.getElementById('cookTimer'); if(!box||!box._t)return;
+ box._paused=!box._paused; vm33TimerPaint();
+}
+function cancelCookTimer(){
+ const box=document.getElementById('cookTimer'); if(!box)return;
+ clearInterval(box._t); box._t=null; box._left=0; box._paused=false;
+ box.style.display='none'; box.classList.remove('running','paused','done');
+ const actions=document.getElementById('smartTimerActions'); if(actions)actions.style.display='none';
+}
 function startCustomTimer(){const n=parseInt(customTimerInput.value||'0');if(!n||n<1){alert(lang==='te'?'నిమిషాలు నమోదు చేయండి.':'Enter minutes.');return}startCookTimer(Math.min(n,180))}
 function speakCurrentStep(){if(!('speechSynthesis' in window)){alert(lang==='te'?'ఈ ఫోన్‌లో వాయిస్ రీడింగ్ అందుబాటులో లేదు.':'Voice reading is not available.');return}stopSpeaking();const u=new SpeechSynthesisUtterance(cookStepText.textContent);u.lang=lang==='te'?'te-IN':'en-IN';u.rate=.9;window.speechSynthesis.speak(u)}
 function stopSpeaking(){if('speechSynthesis' in window)window.speechSynthesis.cancel()}
