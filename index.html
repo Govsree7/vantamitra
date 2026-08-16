@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#176f2b">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg">
-<title>VantaMitra V33</title>
+<title>VantaMitra V34</title>
 <style>
 *{box-sizing:border-box}
 :root{--g:#176f2b;--g2:#2da44e;--o:#f47a20;--bg:#f5f7f3;--soft:#edf7ea;--line:#e3e7df;--text:#1f2b20;--muted:#70776f;--warn:#fff7e8;--shadow:0 10px 28px #00000012}
@@ -319,6 +319,21 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 .timerbar.running{display:block;background:#fff7e8;border-color:#f1ddbb}
 .timerbar.paused{display:block;background:#f2f4f1;border-color:#dfe4dc}
 .timerbar.done{display:block;background:#edf8ea;border-color:#cfe6c8}
+
+/* V34 — final polish: touch, focus, safe areas, motion */
+button,.btn,.chip,.navItem,[onclick]{-webkit-tap-highlight-color:transparent}
+button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid rgba(31,111,67,.28);outline-offset:2px}
+button:active,.btn:active{transform:scale(.985)}
+button:disabled{cursor:not-allowed}
+#cookFullscreen{padding-bottom:env(safe-area-inset-bottom,0px)}
+.cookNav{padding-bottom:max(8px,env(safe-area-inset-bottom,0px))}
+.modal{overscroll-behavior:contain}
+@media(max-width:520px){
+ .modalBox{max-height:94vh;border-radius:20px 20px 0 0}
+ .cookTop{padding-top:max(10px,env(safe-area-inset-top,0px))}
+ .timerRow button,.smartTimerActions button,.cookNav button{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
 <style>
@@ -335,7 +350,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <body>
 <div class="app">
 <header>
-<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V33</span></div>
+<div class="brand"><span class="vg">Vanta</span><span class="vo">Mitra</span><span class="ver">V34</span></div>
 <div class="sub">వంట మిత్ర • Your Cooking Friend</div>
 <div class="lang"><button id="teBtn" class="active" onclick="setLang('te')">తెలుగు</button><button id="enBtn" onclick="setLang('en')">English</button></div>
 </header>
@@ -442,7 +457,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <div class="planGrocery"><h3 id="planGroceryTitle">🛒 ప్లాన్‌కు కావాల్సిన పదార్థాలు</h3><div id="planGroceryList"></div><button class="find" onclick="copyPlanToShopping()" id="copyPlanBtn">Shopping List కు జోడించు</button></div>
 </main>
 <main id="shoppingPage" class="pagePanel"><div class="pageTitle"><h2 id="shopPageTitle">🛒 షాపింగ్ లిస్ట్</h2><button class="pill" onclick="clearShopping()" id="clearShopBtn">Clear</button></div><div id="shoppingList"></div></main>
-<footer>VantaMitra V33 • Smart Timer</footer>
+<footer>VantaMitra V34 • Final Polish</footer>
 </div>
 
 <nav class="bottomNav">
@@ -468,12 +483,12 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 <div class="cookRecipeName" id="cookRecipeName"></div><div class="stepCounter" id="cookStepCounter"></div><div class="progress"><div id="cookProgress"></div></div>
 <div class="cookTextTools">
 <button type="button" onclick="changeCookTextSize(-1)" aria-label="Smaller cooking text">A−</button>
-<span id="cookTextSizeLabel">Text 2/4</span>
+<span id="cookTextSizeLabel" aria-live="polite">Text 2/4</span>
 <button type="button" onclick="changeCookTextSize(1)" aria-label="Larger cooking text">A+</button>
 </div>
 <div class="stepBig" id="cookStepText"></div>
 <button type="button" class="cookIngredientsBtn" id="cookIngredientsBtn" onclick="toggleCookIngredients()">🥕 View Ingredients</button>
-<div class="cookIngredientsPanel" id="cookIngredientsPanel"></div>
+<div class="cookIngredientsPanel" id="cookIngredientsPanel" aria-label="Cooking ingredients"></div>
 <div class="tipBox" id="cookTip">💡 Tip: Keep ingredients ready before you start.</div>
 <div class="voiceRow"><button onclick="speakCurrentStep()" id="speakBtn">🔊 Read step</button><button onclick="stopSpeaking()" id="stopSpeakBtn">⏹ Stop voice</button></div>
 <div class="voiceCommandBar"><button id="oneCommandBtn" onclick="listenOneCommand()">🎙 Say Command</button><button id="handsFreeBtn" onclick="toggleHandsFree()">♻ Continuous</button><button onclick="showCommandHelp()" id="commandHelpBtn">❓</button></div>
@@ -482,7 +497,7 @@ footer{text-align:center;color:#888;border-top:1px solid #eee;padding:16px;font-
 
 <div class="timerRow"><button onclick="startCookTimer(1)">⏱ 1 min</button><button onclick="startCookTimer(3)">⏱ 3 min</button><button onclick="startCookTimer(5)">⏱ 5 min</button><button onclick="startCookTimer(10)">⏱ 10 min</button></div>
 <div class="customTimer"><input id="customTimerInput" type="number" min="1" max="180" placeholder="Minutes"><button onclick="startCustomTimer()" id="customTimerBtn">Start timer</button></div>
-<div class="timerbar" id="cookTimer"></div>
+<div class="timerbar" id="cookTimer" role="status" aria-live="polite"></div>
 <div class="smartTimerActions" id="smartTimerActions">
 <button type="button" id="pauseTimerBtn" onclick="toggleCookTimerPause()">⏸ Pause</button>
 <button type="button" class="danger" id="cancelTimerBtn" onclick="cancelCookTimer()">✕ Cancel</button>
@@ -1235,6 +1250,14 @@ function changeCookTextSize(delta){
   localStorage.setItem('vm32cookText',String(n));
   applyCookTextSize();
 }
+
+/* V34 — stability/accessibility guards */
+document.addEventListener('visibilitychange',function(){
+ if(document.hidden){try{if('speechSynthesis' in window)window.speechSynthesis.cancel()}catch(e){}}
+});
+window.addEventListener('pageshow',function(){
+ try{if(typeof applyCookTextSize==='function')applyCookTextSize()}catch(e){}
+});
 </script>
 </body>
 </html>
